@@ -1,4 +1,4 @@
 export interface CubePiece {
-  position: [number, number, number];
+  position: { x: number; y: number; z: number };
   colors: [string, string, string, string, string, string];
 }

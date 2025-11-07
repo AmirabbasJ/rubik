@@ -20,6 +20,9 @@ importers:
       gsap:
         specifier: ^3.13.0
         version: 3.13.0
+      jeasings:
+        specifier: ^0.0.16
+        version: 0.0.16
       react:
         specifier: ^19.1.1
         version: 19.2.0
@@ -1002,6 +1005,9 @@ packages:
     resolution: {integrity: sha512-KLViCmWx94zOvpLwSlsx6yOCeMhZYaxrJV87Po5k/FoZzcPSahvK5qJ7fYhS61sZi5ikmh2S3Hz55A2l3U69ng==}
     peerDependencies:
       react: ^19.0.0
+
+  jeasings@0.0.16:
+    resolution: {integrity: sha512-BuAbUTdGBBv1L+MCJ0+bbhM2x4ddnnVwPlx0/ZdlKQz9xu8mJI1nWyKPQJB8QBcaeF3s1Lvn2ZaG1uExgpvu/w==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -2330,6 +2336,10 @@ snapshots:
       react: 19.2.0
     transitivePeerDependencies:
       - '@types/react'
+
+  jeasings@0.0.16:
+    dependencies:
+      typescript: 5.9.3
 
   js-tokens@4.0.0: {}
 

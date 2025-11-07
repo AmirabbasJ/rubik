@@ -1,7 +1,4 @@
-import type { CubePiece } from '../domain/CubePiece';
-
-export const pieceSize = 0.75;
-export const pieceSpacing = pieceSize + 0.03;
+import type { Rubik } from '../domain/Rubik';
 
 const pieceColors = {
   red: '#EF476F',
@@ -13,9 +10,9 @@ const pieceColors = {
   black: '#000000',
 };
 
-export const RubikPieces: CubePiece[] = [
+export const RubikPieces: Rubik = [
   {
-    position: [0, 0, 0],
+    position: { x: 0, y: 0, z: 0 },
     colors: [
       pieceColors.black,
       pieceColors.black,
@@ -28,7 +25,7 @@ export const RubikPieces: CubePiece[] = [
 
   // Centers
   {
-    position: [0, pieceSpacing, 0],
+    position: { x: 0, y: 1, z: 0 },
     colors: [
       pieceColors.black,
       pieceColors.black,
@@ -39,7 +36,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [0, -pieceSpacing, 0],
+    position: { x: 0, y: -1, z: 0 },
     colors: [
       pieceColors.black,
       pieceColors.black,
@@ -50,7 +47,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [pieceSpacing, 0, 0],
+    position: { x: 1, y: 0, z: 0 },
     colors: [
       pieceColors.green,
       pieceColors.black,
@@ -61,7 +58,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [-pieceSpacing, 0, 0],
+    position: { x: -1, y: 0, z: 0 },
     colors: [
       pieceColors.black,
       pieceColors.red,
@@ -72,7 +69,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [0, 0, pieceSpacing],
+    position: { x: 0, y: 0, z: 1 },
     colors: [
       pieceColors.black,
       pieceColors.black,
@@ -83,7 +80,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [0, 0, -pieceSpacing],
+    position: { x: 0, y: 0, z: -1 },
     colors: [
       pieceColors.black,
       pieceColors.black,
@@ -96,7 +93,7 @@ export const RubikPieces: CubePiece[] = [
 
   // Edges
   {
-    position: [pieceSpacing, pieceSpacing, 0],
+    position: { x: 1, y: 1, z: 0 },
     colors: [
       pieceColors.green,
       pieceColors.black,
@@ -107,7 +104,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [-pieceSpacing, pieceSpacing, 0],
+    position: { x: -1, y: 1, z: 0 },
     colors: [
       pieceColors.black,
       pieceColors.red,
@@ -118,7 +115,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [pieceSpacing, -pieceSpacing, 0],
+    position: { x: 1, y: -1, z: 0 },
     colors: [
       pieceColors.green,
       pieceColors.black,
@@ -129,7 +126,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [-pieceSpacing, -pieceSpacing, 0],
+    position: { x: -1, y: -1, z: 0 },
     colors: [
       pieceColors.black,
       pieceColors.red,
@@ -140,7 +137,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [0, pieceSpacing, pieceSpacing],
+    position: { x: 0, y: 1, z: 1 },
     colors: [
       pieceColors.black,
       pieceColors.black,
@@ -151,7 +148,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [0, pieceSpacing, -pieceSpacing],
+    position: { x: 0, y: 1, z: -1 },
     colors: [
       pieceColors.black,
       pieceColors.black,
@@ -162,7 +159,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [0, -pieceSpacing, pieceSpacing],
+    position: { x: 0, y: -1, z: 1 },
     colors: [
       pieceColors.black,
       pieceColors.black,
@@ -173,7 +170,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [0, -pieceSpacing, -pieceSpacing],
+    position: { x: 0, y: -1, z: -1 },
     colors: [
       pieceColors.black,
       pieceColors.black,
@@ -186,7 +183,7 @@ export const RubikPieces: CubePiece[] = [
 
   // Corners
   {
-    position: [pieceSpacing, 0, pieceSpacing],
+    position: { x: 1, y: 0, z: 1 },
     colors: [
       pieceColors.green,
       pieceColors.black,
@@ -197,7 +194,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [-pieceSpacing, 0, pieceSpacing],
+    position: { x: -1, y: 0, z: 1 },
     colors: [
       pieceColors.black,
       pieceColors.red,
@@ -208,7 +205,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [pieceSpacing, 0, -pieceSpacing],
+    position: { x: 1, y: 0, z: -1 },
     colors: [
       pieceColors.green,
       pieceColors.black,
@@ -219,7 +216,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [-pieceSpacing, 0, -pieceSpacing],
+    position: { x: -1, y: 0, z: -1 },
     colors: [
       pieceColors.black,
       pieceColors.red,
@@ -230,7 +227,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [pieceSpacing, pieceSpacing, pieceSpacing],
+    position: { x: 1, y: 1, z: 1 },
     colors: [
       pieceColors.green,
       pieceColors.black,
@@ -241,7 +238,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [-pieceSpacing, pieceSpacing, pieceSpacing],
+    position: { x: -1, y: 1, z: 1 },
     colors: [
       pieceColors.black,
       pieceColors.red,
@@ -252,7 +249,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [pieceSpacing, -pieceSpacing, pieceSpacing],
+    position: { x: 1, y: -1, z: 1 },
     colors: [
       pieceColors.green,
       pieceColors.black,
@@ -263,7 +260,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [-pieceSpacing, -pieceSpacing, pieceSpacing],
+    position: { x: -1, y: -1, z: 1 },
     colors: [
       pieceColors.black,
       pieceColors.red,
@@ -274,7 +271,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [pieceSpacing, pieceSpacing, -pieceSpacing],
+    position: { x: 1, y: 1, z: -1 },
     colors: [
       pieceColors.green,
       pieceColors.black,
@@ -285,7 +282,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [-pieceSpacing, pieceSpacing, -pieceSpacing],
+    position: { x: -1, y: 1, z: -1 },
     colors: [
       pieceColors.black,
       pieceColors.red,
@@ -296,7 +293,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [pieceSpacing, -pieceSpacing, -pieceSpacing],
+    position: { x: 1, y: -1, z: -1 },
     colors: [
       pieceColors.green,
       pieceColors.black,
@@ -307,7 +304,7 @@ export const RubikPieces: CubePiece[] = [
     ],
   },
   {
-    position: [-pieceSpacing, -pieceSpacing, -pieceSpacing],
+    position: { x: -1, y: -1, z: -1 },
     colors: [
       pieceColors.black,
       pieceColors.red,
