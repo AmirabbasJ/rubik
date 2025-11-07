@@ -8,7 +8,7 @@ export function App() {
   return (
     <div id="canvas-container" className={classes.main}>
       <Canvas>
-        <OrbitControls target={[0, 0, 0]} />
+        <OrbitControls target={[0, 0, 0]} enableZoom={false} />
         <ambientLight intensity={2} />
         <directionalLight position={[0, 0, 0]} />
         <Rubik />
