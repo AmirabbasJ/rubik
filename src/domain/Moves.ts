@@ -12,7 +12,7 @@ export type Moves =
   | "F'"
   | "B'";
 
-export const Moves: Record<string, Moves> = {
+export const Moves = {
   Up: 'U',
   Down: 'D',
   Right: 'R',
@@ -25,4 +25,4 @@ export const Moves: Record<string, Moves> = {
   LeftReverse: "L'",
   FrontReverse: "F'",
   BackReverse: "B'",
-};
+} as const;
