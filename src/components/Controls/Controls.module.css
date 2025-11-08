@@ -1,0 +1,32 @@
+.controls {
+  width: 100%;
+  margin-bottom: 30px;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  grid-template-columns: repeat(6, minmax(0, auto));
+  grid-template-rows: 1fr 1fr;
+  grid-gap: 8px;
+}
+
+.button {
+  background: whitesmoke;
+  font-family: inherit;
+  padding: 0.6em 1.3em;
+  font-weight: 900;
+  font-size: 16px;
+  border: 1px solid black;
+  border-radius: 0.4em;
+  box-shadow: 0.1em 0.1em;
+  cursor: pointer;
+}
+
+.button:hover {
+  transform: translate(-0.05em, -0.05em);
+  box-shadow: 0.15em 0.15em;
+}
+
+.button:active {
+  transform: translate(0.05em, 0.05em);
+  box-shadow: 0.05em 0.05em;
+}

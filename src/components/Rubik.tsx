@@ -1,9 +1,11 @@
+import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import jeasings from 'jeasings';
 import { useRef } from 'react';
 import { type Group, type Object3DEventMap } from 'three';
 import { RubikPieces as initRubikPieces } from '../data/Rubik';
 import type { Axis } from '../domain/Axis';
+import { Controls } from './Controls/Controls';
 import { RubikPiece } from './RubikPiece';
 
 const pieceSize = 0.75;
@@ -14,7 +16,7 @@ export const Rubik: React.FC = () => {
     null as unknown as Group<Object3DEventMap>
   );
 
-  const pivotRef = useRef<Group<Object3DEventMap>>(
+  const cubeGroupRef = useRef<Group<Object3DEventMap>>(
     null as unknown as Group<Object3DEventMap>
   );
 
@@ -60,24 +62,24 @@ export const Rubik: React.FC = () => {
       .start();
   }
 
-  function rotate(
-    cubeGroup: Group,
-    rotationGroup: Group,
-    axis: Axis,
-    limit: number,
-    multiplier: number
-  ): void {
-    if (!jeasings.getLength()) {
-      resetCubeGroup(cubeGroup, rotationGroup);
-      attachToRotationGroup(cubeGroup, rotationGroup, axis, limit);
-      animateRotationGroup(rotationGroup, axis, multiplier);
+  function rotate(axis: Axis, limit: number, multiplier: number): void {
+    const isAnimating = jeasings.getLength() > 0;
+    if (!isAnimating) {
+      resetCubeGroup(cubeGroupRef.current, rotationGroupRef.current);
+      attachToRotationGroup(
+        cubeGroupRef.current,
+        rotationGroupRef.current,
+        axis,
+        limit
+      );
+      animateRotationGroup(rotationGroupRef.current, axis, multiplier);
     }
   }
 
   return (
     <>
       <group ref={rotationGroupRef} />
-      <group ref={pivotRef}>
+      <group ref={cubeGroupRef}>
         {initRubikPieces.map((cube, index) => (
           <RubikPiece
             position={cube.position}
@@ -88,6 +90,11 @@ export const Rubik: React.FC = () => {
           />
         ))}
       </group>
+      <Html fullscreen>
+        <div style={{ position: 'absolute', bottom: '0', width: '100%' }}>
+          <Controls rotate={rotate} />
+        </div>
+      </Html>
     </>
   );
 };
