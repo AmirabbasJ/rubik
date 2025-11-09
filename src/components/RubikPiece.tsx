@@ -7,7 +7,6 @@ type Props = CubePiece & { spacing: number; pieceSize: number };
 
 export function RubikPiece({ position, colors, spacing, pieceSize }: Props) {
   const meshRef = useRef<Mesh>(null as unknown as Mesh);
-  console.log(position.x);
 
   return (
     <mesh

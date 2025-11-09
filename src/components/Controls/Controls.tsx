@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import type { Axis } from '../../domain/Axis';
 import type { Moves } from '../../domain/Moves';
 import classes from './Controls.module.css';
@@ -19,23 +19,20 @@ const keyToMoveMap = {
 export function Controls({ rotate }: Props) {
   useEffect(() => {}, []);
 
-  const moveMap: Record<Moves, VoidFunction> = useMemo(
-    () => ({
-      R: () => rotate('x', 0.5, -1),
-      U: () => rotate('y', 0.5, 1),
-      F: () => rotate('z', 0.5, -1),
-      L: () => rotate('x', -0.5, 1),
-      D: () => rotate('y', -0.5, -1),
-      B: () => rotate('z', -0.5, 1),
-      "R'": () => rotate('x', 0.5, 1),
-      "U'": () => rotate('y', 0.5, -1),
-      "D'": () => rotate('y', -0.5, 1),
-      "L'": () => rotate('x', -0.5, -1),
-      "F'": () => rotate('z', 0.5, 1),
-      "B'": () => rotate('z', -0.5, -1),
-    }),
-    []
-  );
+  const moveMap: Record<Moves, VoidFunction> = {
+    U: () => rotate('y', 0.5, 1),
+    D: () => rotate('y', -0.5, -1),
+    R: () => rotate('x', 0.5, -1),
+    L: () => rotate('x', -0.5, 1),
+    F: () => rotate('z', 0.5, -1),
+    B: () => rotate('z', -0.5, 1),
+    "U'": () => rotate('y', 0.5, -1),
+    "D'": () => rotate('y', -0.5, 1),
+    "R'": () => rotate('x', 0.5, 1),
+    "L'": () => rotate('x', -0.5, -1),
+    "F'": () => rotate('z', 0.5, 1),
+    "B'": () => rotate('z', -0.5, -1),
+  };
 
   const handleKeyDown = (event: KeyboardEvent) => {
     const key = event.key.toLowerCase();

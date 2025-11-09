@@ -7,7 +7,7 @@ import { Rubik } from './components/Rubik';
 export function App() {
   return (
     <div id="canvas-container" className={classes.main}>
-      <Canvas>
+      <Canvas camera={{ position: [4, 4, 4], fov: 55 }}>
         <OrbitControls
           target={[0, 0, 0]}
           enableZoom={false}
