@@ -5,7 +5,7 @@
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "types": ["vite/client"],
+    "types": ["vite/client", "./@types/cobejs.d.ts"],
     "skipLibCheck": true,
 
     /* Bundler mode */
@@ -24,8 +24,8 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
     "paths": {
-      "three/webgpu": ["node_modules/three/build/three.webgpu.js"],
-      "three/tsl": ["node_modules/three/build/three.tsl.js"]
+      "three/webgpu": ["./node_modules/three/build/three.webgpu.js"],
+      "three/tsl": ["./node_modules/three/build/three.tsl.js"]
     }
   },
   "include": ["src"]
