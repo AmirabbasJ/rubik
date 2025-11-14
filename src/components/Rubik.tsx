@@ -18,7 +18,7 @@ const pieceSpacing = 0.03;
 
 const moveList = [];
 
-export const Rubik: React.FC = () => {
+export const Rubik = () => {
   const ContextProviders = useContextBridge(ColoringContext);
 
   const rotationGroupRef = useRef<Group<Object3DEventMap>>(
@@ -201,7 +201,6 @@ export const Rubik: React.FC = () => {
       <group ref={cubeGroupRef}>
         {initRubikPieces.map((cube, index) => (
           <RubikPiece
-            id={index}
             position={cube.position}
             pieceSize={pieceSize}
             spacing={pieceSpacing}
