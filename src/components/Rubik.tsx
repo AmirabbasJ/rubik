@@ -16,8 +16,6 @@ import { RubikPiece } from './RubikPiece';
 const pieceSize = 0.75;
 const pieceSpacing = 0.03;
 
-const moveList = [];
-
 export const Rubik = () => {
   const ContextProviders = useContextBridge(ColoringContext);
 
@@ -28,6 +26,9 @@ export const Rubik = () => {
   const cubeGroupRef = useRef<Group<Object3DEventMap>>(
     null as unknown as Group<Object3DEventMap>
   );
+
+  const moveListRef = useRef<Moves[]>([]);
+  const moveList = moveListRef.current;
 
   //TODO random code
   // useEffect(() => {
@@ -79,6 +80,8 @@ export const Rubik = () => {
   }
 
   const move = (moveName: Moves) => {
+    moveList.push(moveName);
+
     switch (moveName) {
       case 'U':
         return rotate('y', 0.5, -1);
@@ -104,9 +107,6 @@ export const Rubik = () => {
         return rotate('z', 0.5, 1);
       case "B'":
         return rotate('z', -0.5, -1);
-      default:
-        console.error(`Invalid move: ${moveName}`);
-        return;
     }
   };
 
