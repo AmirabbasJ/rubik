@@ -26,7 +26,8 @@
     "noUncheckedSideEffectImports": true,
     "paths": {
       "three/webgpu": ["./node_modules/three/build/three.webgpu.js"],
-      "three/tsl": ["./node_modules/three/build/three.tsl.js"]
+      "three/tsl": ["./node_modules/three/build/three.tsl.js"],
+      "three/addons/": ["./node_modules/three/examples/jsm/Addons.js"]
     }
   },
   "include": ["src"]

@@ -5,6 +5,8 @@ import { RoundedBoxGeometry } from 'three/examples/jsm/Addons.js';
 import { useColoring } from '../Context/ColorContext';
 import { type CubePiece, type Side } from '../domain/CubePiece';
 
+export type PieceMesh = Mesh<RoundedBoxGeometry, MeshBasicMaterial[]>;
+
 type Props = CubePiece & { spacing: number; pieceSize: number };
 
 export function RubikPiece({ position, sides, pieceSize }: Props) {
@@ -26,7 +28,7 @@ export function RubikPiece({ position, sides, pieceSize }: Props) {
       onClick={(event) => {
         event.stopPropagation();
         const { face, object } = event;
-        const piece = object as Mesh<RoundedBoxGeometry, MeshBasicMaterial[]>;
+        const piece = object as PieceMesh;
         if (!face || !selectedSide) return;
 
         const materialIndex = face.materialIndex;

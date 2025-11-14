@@ -2,16 +2,17 @@ import { Html, useContextBridge } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import jeasings from 'jeasings';
 import { useRef } from 'react';
-import { type Group, type Object3DEventMap } from 'three';
+import { type Group } from 'three';
 import { ColoringContext } from '../Context/ColorContext';
 import { RubikPieces as initRubikPieces, sidesToString } from '../data/Rubik';
 import type { Axis } from '../domain/Axis';
+import type { Sides } from '../domain/CubePiece';
 import type { Moves } from '../domain/Moves';
 import Cube from '../libs/cubejs';
 import { Controls } from './Controls/Controls';
 import { Navbar } from './Navbar/Navbar';
 import { Palette } from './Palette/Palette';
-import { RubikPiece } from './RubikPiece';
+import { RubikPiece, type PieceMesh } from './RubikPiece';
 
 const pieceSize = 0.75;
 const pieceSpacing = 0.03;
@@ -19,13 +20,11 @@ const pieceSpacing = 0.03;
 export const Rubik = () => {
   const ContextProviders = useContextBridge(ColoringContext);
 
-  const rotationGroupRef = useRef<Group<Object3DEventMap>>(
-    null as unknown as Group<Object3DEventMap>
-  );
+  const rotationGroupRef = useRef<Group>(null as unknown as Group);
+  const rotationGroup = rotationGroupRef.current;
 
-  const cubeGroupRef = useRef<Group<Object3DEventMap>>(
-    null as unknown as Group<Object3DEventMap>
-  );
+  const cubeGroupRef = useRef<Group>(null as unknown as Group);
+  const cubeGroup = cubeGroupRef.current;
 
   const moveListRef = useRef<Moves[]>([]);
   const moveList = moveListRef.current;
@@ -58,25 +57,48 @@ export const Rubik = () => {
   //     );
   // }, []);
 
-  function solve() {
-    const x = sidesToString(
-      [...cubeGroupRef.current.children]
-        .toSorted((a, b) => Number(a.name) - Number(b.name))
-        .map((c) => c.material.map((m) => m.name))
-    );
+  useFrame(() => {
+    jeasings.update();
+  });
 
-    const cube = Cube.fromString(x);
+  function resetCubeGroup(): void {
+    [...rotationGroup.children].forEach((c) => {
+      cubeGroup.attach(c);
+    });
+    rotationGroup.quaternion.set(0, 0, 0, 1);
+  }
 
-    cube
-      .solve()
-      .split(' ')
-      .flatMap((c) => (c.endsWith('2') ? [c[0], c[0]] : [c]))
-      .forEach((c, index) => {
-        setTimeout(() => {
-          move[c as Moves]();
-        }, index * 500);
+  function attachToRotationGroup(axis: Axis, limit: number): void {
+    [...cubeGroup.children]
+      .filter((c) => {
+        return limit < 0 ? c.position[axis] < limit : c.position[axis] > limit;
+      })
+      .forEach((c) => {
+        rotationGroup.attach(c);
       });
-    if (moveList.length > 0) cube.move(Cube.inverse(moveList.join(' ')));
+  }
+
+  function animateRotationGroup(axis: Axis, multiplier: number): void {
+    new jeasings.JEasing(rotationGroup.rotation)
+      .to(
+        {
+          [axis]: rotationGroup.rotation[axis] + (Math.PI / 2) * multiplier,
+        },
+        250
+      )
+      .easing(jeasings.Cubic.InOut)
+      .start()
+      .onComplete(() => {
+        resetCubeGroup();
+      });
+  }
+
+  function rotate(axis: Axis, limit: number, multiplier: number): void {
+    const isAnimating = jeasings.getLength() > 0;
+    if (!isAnimating) {
+      attachToRotationGroup(axis, limit);
+      animateRotationGroup(axis, multiplier);
+    }
   }
 
   const move = (moveName: Moves) => {
@@ -110,62 +132,25 @@ export const Rubik = () => {
     }
   };
 
-  useFrame(() => {
-    jeasings.update();
-  });
+  function solve() {
+    const x = sidesToString(
+      ([...cubeGroupRef.current.children] as PieceMesh[])
+        .toSorted((a, b) => a.name.localeCompare(b.name))
+        .map((c) => c.material.map((m) => m.name)) as Sides[]
+    );
 
-  function resetCubeGroup(cubeGroup: Group, rotationGroup: Group): void {
-    [...rotationGroup.children].forEach((c) => {
-      cubeGroup.attach(c);
-    });
-    rotationGroup.quaternion.set(0, 0, 0, 1);
-  }
+    const cube = Cube.fromString(x);
 
-  function attachToRotationGroup(
-    cubeGroup: Group,
-    rotationGroup: Group,
-    axis: Axis,
-    limit: number
-  ): void {
-    [...cubeGroup.children]
-      .filter((c) => {
-        return limit < 0 ? c.position[axis] < limit : c.position[axis] > limit;
-      })
-      .forEach((c) => {
-        rotationGroup.attach(c);
+    cube
+      .solve()
+      .split(' ')
+      .flatMap((c) => (c.endsWith('2') ? [c[0], c[0]] : [c]))
+      .forEach((c, index) => {
+        setTimeout(() => {
+          move(c as Moves);
+        }, index * 500);
       });
-  }
-
-  function animateRotationGroup(
-    rotationGroup: Group,
-    axis: Axis,
-    multiplier: number
-  ): void {
-    new jeasings.JEasing(rotationGroup.rotation)
-      .to(
-        {
-          [axis]: rotationGroup.rotation[axis] + (Math.PI / 2) * multiplier,
-        },
-        250
-      )
-      .easing(jeasings.Cubic.InOut)
-      .start()
-      .onComplete(() => {
-        resetCubeGroup(cubeGroupRef.current, rotationGroupRef.current);
-      });
-  }
-
-  function rotate(axis: Axis, limit: number, multiplier: number): void {
-    const isAnimating = jeasings.getLength() > 0;
-    if (!isAnimating) {
-      attachToRotationGroup(
-        cubeGroupRef.current,
-        rotationGroupRef.current,
-        axis,
-        limit
-      );
-      animateRotationGroup(rotationGroupRef.current, axis, multiplier);
-    }
+    if (moveList.length > 0) cube.move(Cube.inverse(moveList.join(' ')));
   }
 
   return (
