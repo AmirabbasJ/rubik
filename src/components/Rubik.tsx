@@ -12,11 +12,11 @@ import { Controls } from './Controls/Controls';
 import { Navbar } from './Navbar/Navbar';
 import { Palette } from './Palette/Palette';
 import { RubikPiece } from './RubikPiece';
+
 const pieceSize = 0.75;
 const pieceSpacing = 0.03;
 
 Cube.initSolver();
-console.log(Cube.random().asString());
 
 const moveList = [];
 
@@ -194,14 +194,9 @@ export const Rubik: React.FC = () => {
     <>
       <Html fullscreen>
         <ContextProviders>
-          <div style={{ position: 'absolute', top: '0', width: '100%' }}>
-            <Navbar solve={solve} />
-          </div>
-
+          <Navbar solve={solve} />
           <Palette />
-          <div style={{ position: 'absolute', bottom: '0', width: '100%' }}>
-            <Controls moveMap={moveMap} />
-          </div>
+          <Controls moveMap={moveMap} />
         </ContextProviders>
       </Html>
       <group ref={rotationGroupRef} />

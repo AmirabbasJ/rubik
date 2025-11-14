@@ -15,7 +15,7 @@ export function Scene() {
           enablePan={false}
         />
         <ambientLight intensity={4} />
-        <directionalLight position={[0, 0, 0]} />
+        <directionalLight intensity={10} position={[0, 0, 0]} />
         <ColoringProvider>
           <Rubik />
         </ColoringProvider>

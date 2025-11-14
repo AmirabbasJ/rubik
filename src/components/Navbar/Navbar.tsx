@@ -6,8 +6,10 @@ interface Props {
 
 export const Navbar = ({ solve }: Props) => {
   return (
-    <div className={classes.navbar}>
-      <button onClick={solve}>solve</button>
+    <div className={classes.container}>
+      <div className={classes.navbar}>
+        <button onClick={solve}>solve</button>
+      </div>
     </div>
   );
 };

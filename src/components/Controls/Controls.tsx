@@ -15,8 +15,6 @@ const keyToMoveMap = {
 } as const;
 
 export function Controls({ moveMap }: Props) {
-  useEffect(() => {}, []);
-
   const handleKeyDown = (event: KeyboardEvent) => {
     const key = event.key.toLowerCase();
     if (!(key in keyToMoveMap)) return;
@@ -34,12 +32,14 @@ export function Controls({ moveMap }: Props) {
   }, []);
 
   return (
-    <div className={classes.controls}>
-      {Object.entries(moveMap).map(([key, action]) => (
-        <button key={key} className={classes.button} onClick={action}>
-          {key}
-        </button>
-      ))}
+    <div className={classes.container}>
+      <div className={classes.controls}>
+        {Object.entries(moveMap).map(([key, action]) => (
+          <button key={key} className={classes.button} onClick={action}>
+            {key}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
