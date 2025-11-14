@@ -29,58 +29,6 @@ export const Rubik = () => {
     null as unknown as Group<Object3DEventMap>
   );
 
-  const moveMap: Record<Moves, VoidFunction> = {
-    U: () => {
-      rotate('y', 0.5, -1);
-
-      moveList.push('U');
-    },
-    D: () => {
-      rotate('y', -0.5, 1);
-      moveList.push('D');
-    },
-    R: () => {
-      rotate('x', 0.5, -1);
-      moveList.push('R');
-    },
-    L: () => {
-      rotate('x', -0.5, 1);
-      moveList.push('L');
-    },
-    F: () => {
-      rotate('z', 0.5, -1);
-      moveList.push('F');
-    },
-    B: () => {
-      rotate('z', -0.5, 1);
-      moveList.push('B');
-    },
-    "U'": () => {
-      rotate('y', 0.5, 1);
-      moveList.push("U'");
-    },
-    "D'": () => {
-      rotate('y', -0.5, -1);
-      moveList.push("D'");
-    },
-    "R'": () => {
-      rotate('x', 0.5, 1);
-      moveList.push("R'");
-    },
-    "L'": () => {
-      rotate('x', -0.5, -1);
-      moveList.push("L'");
-    },
-    "F'": () => {
-      rotate('z', 0.5, 1);
-      moveList.push("F'");
-    },
-    "B'": () => {
-      rotate('z', -0.5, -1);
-      moveList.push("B'");
-    },
-  };
-
   //TODO random code
   // useEffect(() => {
   //   const randomCube = Cube.random();
@@ -124,11 +72,43 @@ export const Rubik = () => {
       .flatMap((c) => (c.endsWith('2') ? [c[0], c[0]] : [c]))
       .forEach((c, index) => {
         setTimeout(() => {
-          moveMap[c as Moves]();
+          move[c as Moves]();
         }, index * 500);
       });
     if (moveList.length > 0) cube.move(Cube.inverse(moveList.join(' ')));
   }
+
+  const move = (moveName: Moves) => {
+    switch (moveName) {
+      case 'U':
+        return rotate('y', 0.5, -1);
+      case 'D':
+        return rotate('y', -0.5, 1);
+      case 'R':
+        return rotate('x', 0.5, -1);
+      case 'L':
+        return rotate('x', -0.5, 1);
+      case 'F':
+        return rotate('z', 0.5, -1);
+      case 'B':
+        return rotate('z', -0.5, 1);
+      case "U'":
+        return rotate('y', 0.5, 1);
+      case "D'":
+        return rotate('y', -0.5, -1);
+      case "R'":
+        return rotate('x', 0.5, 1);
+      case "L'":
+        return rotate('x', -0.5, -1);
+      case "F'":
+        return rotate('z', 0.5, 1);
+      case "B'":
+        return rotate('z', -0.5, -1);
+      default:
+        console.error(`Invalid move: ${moveName}`);
+        return;
+    }
+  };
 
   useFrame(() => {
     jeasings.update();
@@ -194,18 +174,18 @@ export const Rubik = () => {
         <ContextProviders>
           <Navbar solve={solve} />
           <Palette />
-          <Controls moveMap={moveMap} />
+          <Controls move={move} />
         </ContextProviders>
       </Html>
       <group ref={rotationGroupRef} />
       <group ref={cubeGroupRef}>
         {initRubikPieces.map((cube, index) => (
           <RubikPiece
+            key={index}
             position={cube.position}
+            sides={cube.sides}
             pieceSize={pieceSize}
             spacing={pieceSpacing}
-            key={index}
-            sides={cube.sides}
           />
         ))}
       </group>

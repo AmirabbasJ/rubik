@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
+import { Moves } from '../../domain/Moves';
 import classes from './Controls.module.css';
 
 interface Props {
-  moveMap: Record<string, VoidFunction>;
+  move: (m: Moves) => void;
 }
 
-const keyToMoveMap = {
+const keyToMoveSideMap = {
   d: 'R',
   w: 'U',
   s: 'F',
@@ -14,14 +15,14 @@ const keyToMoveMap = {
   e: 'B',
 } as const;
 
-export function Controls({ moveMap }: Props) {
+export function Controls({ move }: Props) {
   const handleKeyDown = (event: KeyboardEvent) => {
     const key = event.key.toLowerCase();
-    if (!(key in keyToMoveMap)) return;
+    if (!(key in keyToMoveSideMap)) return;
 
-    const move = keyToMoveMap[key as keyof typeof keyToMoveMap];
-    const moveAction = event.shiftKey ? moveMap[`${move}'`] : moveMap[move];
-    moveAction();
+    const moveSide = keyToMoveSideMap[key as keyof typeof keyToMoveSideMap];
+    const moveName = event.shiftKey ? (`${moveSide}'` as const) : moveSide;
+    move(moveName);
   };
 
   useEffect(() => {
@@ -34,9 +35,13 @@ export function Controls({ moveMap }: Props) {
   return (
     <div className={classes.container}>
       <div className={classes.controls}>
-        {Object.entries(moveMap).map(([key, action]) => (
-          <button key={key} className={classes.button} onClick={action}>
-            {key}
+        {Object.values(Moves).map((moveName) => (
+          <button
+            key={moveName}
+            className={classes.button}
+            onClick={() => move(moveName)}
+          >
+            {moveName}
           </button>
         ))}
       </div>
