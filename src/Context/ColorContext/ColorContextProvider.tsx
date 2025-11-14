@@ -3,13 +3,13 @@ import type { Side } from '../../domain/CubePiece';
 import { ColoringContext } from './ColorContext';
 
 export type ColoringContextType = {
-  selectedSide: string | null;
-  setSelectedSide: (c: string) => void;
+  selectedSide: Side | null;
+  setSelectedSide: (c: Side | null) => void;
   sideToColorMap: Record<Side, string>;
 };
 
 export function ColoringProvider({ children }: { children: React.ReactNode }) {
-  const [selectedSide, setSelectedSide] = useState<string | null>(null);
+  const [selectedSide, setSelectedSide] = useState<Side | null>(null);
   // TODO allow setting
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [sideToColorMap, setSideToColorMap] = useState<Record<Side, string>>({

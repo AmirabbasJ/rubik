@@ -16,8 +16,6 @@ import { RubikPiece } from './RubikPiece';
 const pieceSize = 0.75;
 const pieceSpacing = 0.03;
 
-Cube.initSolver();
-
 const moveList = [];
 
 export const Rubik: React.FC = () => {
