@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import jeasings from 'jeasings';
 import { useRef } from 'react';
 import { type Group, type Object3DEventMap } from 'three';
-import { ColorContext, useColor } from '../Context/ColorContext';
+import { ColoringContext } from '../Context/ColorContext';
 import { RubikPieces as initRubikPieces, sidesToString } from '../data/Rubik';
 import type { Axis } from '../domain/Axis';
 import type { Moves } from '../domain/Moves';
@@ -21,8 +21,7 @@ console.log(Cube.random().asString());
 const moveList = [];
 
 export const Rubik: React.FC = () => {
-  const side = useColor();
-  const ContextProviders = useContextBridge(ColorContext);
+  const ContextProviders = useContextBridge(ColoringContext);
 
   const rotationGroupRef = useRef<Group<Object3DEventMap>>(
     null as unknown as Group<Object3DEventMap>
@@ -130,7 +129,6 @@ export const Rubik: React.FC = () => {
           moveMap[c as Moves]();
         }, index * 500);
       });
-    console.log('here');
     if (moveList.length > 0) cube.move(Cube.inverse(moveList.join(' ')));
   }
 
@@ -210,7 +208,6 @@ export const Rubik: React.FC = () => {
       <group ref={cubeGroupRef}>
         {initRubikPieces.map((cube, index) => (
           <RubikPiece
-            pieces={cubeGroupRef.current?.children}
             id={index}
             position={cube.position}
             pieceSize={pieceSize}

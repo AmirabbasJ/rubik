@@ -1,46 +1,31 @@
 import type { CSSProperties } from 'react';
 import classes from './Palette.module.css';
 
-import { useColor } from '../../Context/ColorContext';
-
-export const sideToColorMapPalette: Record<string, string> = {
-  L: '#EF476F',
-  B: '#F78C6B',
-  U: '#FFD166',
-  R: '#06D6A0',
-  D: '#118AB2',
-  F: '#FFFFFF',
-  '-': '#000000',
-};
+import { useColoring } from '../../Context/ColorContext';
 
 export const Palette = () => {
-  const ctx = useColor();
-
-  const selected = ctx?.color;
+  const { selectedSide, setSelectedSide, sideToColorMap } = useColoring();
 
   return (
     <div className={classes.palette} role="toolbar" aria-orientation="vertical">
-      {Object.entries(sideToColorMapPalette)
-        .toSorted(([sA, colorA], [sB, colorB]) => colorA.localeCompare(colorB))
+      {Object.entries(sideToColorMap)
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .toSorted(([_, colorA], [__, colorB]) => colorA.localeCompare(colorB))
         .filter(([side]) => side !== '-')
         .map(([side, color]) => {
-          const isSelected = selected === side;
+          const isSelected = selectedSide === side;
 
           const style: CSSProperties = { background: color };
           return (
             <button
               key={side}
-              className={`${classes.colorButton} ${
-                isSelected ? classes.selected : ''
+              className={`${isSelected ? classes.selected : ''} ${
+                classes.colorButton
               }`}
-              title={`${side} — ${color}`}
-              aria-label={`Select color ${side}`}
+              title={color}
+              aria-label={`Select color ${color}`}
               onClick={() => {
-                if (ctx?.setColor) {
-                  ctx.setColor(side);
-                } else {
-                  console.warn('Palette: setColor not found in ColorContext');
-                }
+                setSelectedSide(side);
               }}
               style={style}
               type="button"

@@ -39,14 +39,14 @@ export const getSideIndex = (side: Side, p: Position) => {
   return Math.abs(bAxis + 1) * 3 + Math.abs(aAxis + 1);
 };
 
-export type IndexedSide = `${Exclude<Side, '-'>}${number}` | '-';
+export type VisibleSide = `${Exclude<Side, '-'>}${number}` | '-';
 export type Sides = [
-  IndexedSide,
-  IndexedSide,
-  IndexedSide,
-  IndexedSide,
-  IndexedSide,
-  IndexedSide
+  VisibleSide,
+  VisibleSide,
+  VisibleSide,
+  VisibleSide,
+  VisibleSide,
+  VisibleSide
 ];
 
 export interface CubePiece {

@@ -1,26 +1,14 @@
 import { useRef } from 'react';
 import { type Mesh } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/Addons.js';
-import { useColor } from '../Context/ColorContext';
+import { useColoring } from '../Context/ColorContext';
 import { type CubePiece, type Side } from '../domain/CubePiece';
-import { sideToColorMapPalette } from './Palette/Palette';
 
 type Props = CubePiece & { spacing: number; pieceSize: number; id: number };
 
-const sideToColorMap = {
-  L: '#EF476F',
-  B: '#F78C6B',
-  U: '#FFD166',
-  R: '#06D6A0',
-  D: '#118AB2',
-  F: '#FFFFFF',
-  '-': '#000000',
-};
+export function RubikPiece({ position, sides, pieceSize, id }: Props) {
+  const { selectedSide, sideToColorMap } = useColoring();
 
-const swapped = {};
-
-export function RubikPiece({ position, sides, pieceSize, id, pieces }: Props) {
-  const { color: selected, setColor } = useColor();
   const meshRef = useRef<Mesh>(null as unknown as Mesh);
   return (
     <mesh
@@ -32,9 +20,9 @@ export function RubikPiece({ position, sides, pieceSize, id, pieces }: Props) {
           const materialIndex = face.materialIndex;
           const clickedMaterial = object.material[materialIndex];
           const clickedSide = clickedMaterial.name[0];
-          if (selected) {
-            clickedMaterial.name = `${selected}${clickedMaterial.name[1]}`;
-            clickedMaterial.color.setStyle(sideToColorMapPalette[selected]);
+          if (selectedSide) {
+            clickedMaterial.name = `${selectedSide}${clickedMaterial.name[1]}`;
+            clickedMaterial.color.setStyle(sideToColorMap[selectedSide]);
           }
         }
       }}

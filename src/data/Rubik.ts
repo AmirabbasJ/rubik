@@ -1,4 +1,4 @@
-import type { IndexedSide, Sides } from '../domain/CubePiece';
+import type { Sides, VisibleSide } from '../domain/CubePiece';
 import type { Rubik } from '../domain/Rubik';
 
 export const RubikPieces: Rubik = [
@@ -104,7 +104,7 @@ export const sidesIndexMap = ['U', 'R', 'F', 'D', 'L', 'B']
   .flatMap((c) =>
     Array(9)
       .fill(c)
-      .map((c, i) => `${c}${i}` as IndexedSide)
+      .map((c, i) => `${c}${i}` as VisibleSide)
   )
   .map((c) =>
     RubikPieces.reduce(

@@ -1,6 +1,6 @@
 import { createContext } from 'react';
-import type { ColorContextType } from './ColorContextProvider';
+import type { ColoringContextType } from './ColorContextProvider';
 
-export const ColorContext = createContext<ColorContextType | undefined>(
+export const ColoringContext = createContext<ColoringContextType | undefined>(
   undefined
 );
