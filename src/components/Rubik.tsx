@@ -7,7 +7,7 @@ import { ColoringContext } from '../Context/ColorContext';
 import { RubikPieces as initRubikPieces, sidesToString } from '../data/Rubik';
 import type { Axis } from '../domain/Axis';
 import type { Sides } from '../domain/CubePiece';
-import type { Moves } from '../domain/Moves';
+import type { MoveWithDoubles } from '../domain/Moves';
 import Cube from '../libs/cubejs';
 import { Controls } from './Controls/Controls';
 import { Navbar } from './Navbar/Navbar';
@@ -17,16 +17,20 @@ import { RubikPiece, type PieceMesh } from './RubikPiece';
 const pieceSize = 0.75;
 const pieceSpacing = 0.03;
 
+interface Rotation {
+  axis: Axis;
+  limit: number;
+  multiplier: number;
+}
+
 export const Rubik = () => {
   const ContextProviders = useContextBridge(ColoringContext);
 
   const rotationGroupRef = useRef<Group>(null as unknown as Group);
-  const rotationGroup = rotationGroupRef.current;
 
   const cubeGroupRef = useRef<Group>(null as unknown as Group);
-  const cubeGroup = cubeGroupRef.current;
 
-  const moveListRef = useRef<Moves[]>([]);
+  const moveListRef = useRef<MoveWithDoubles[]>([]);
   const moveList = moveListRef.current;
 
   //TODO random code
@@ -62,13 +66,19 @@ export const Rubik = () => {
   });
 
   function resetCubeGroup(): void {
+    const rotationGroup = rotationGroupRef.current;
+    const cubeGroup = cubeGroupRef.current;
+
     [...rotationGroup.children].forEach((c) => {
       cubeGroup.attach(c);
     });
     rotationGroup.quaternion.set(0, 0, 0, 1);
   }
 
-  function attachToRotationGroup(axis: Axis, limit: number): void {
+  function attachToRotationGroup({ axis, limit }: Rotation): void {
+    const rotationGroup = rotationGroupRef.current;
+    const cubeGroup = cubeGroupRef.current;
+
     [...cubeGroup.children]
       .filter((c) => {
         return limit < 0 ? c.position[axis] < limit : c.position[axis] > limit;
@@ -78,58 +88,97 @@ export const Rubik = () => {
       });
   }
 
-  function animateRotationGroup(axis: Axis, multiplier: number): void {
-    new jeasings.JEasing(rotationGroup.rotation)
+  function getRotationAnimationEasing({ axis, multiplier }: Rotation) {
+    const rotationGroup = rotationGroupRef.current;
+
+    return new jeasings.JEasing(rotationGroup.rotation)
       .to(
         {
           [axis]: rotationGroup.rotation[axis] + (Math.PI / 2) * multiplier,
         },
-        250
+        250 * (Math.abs(multiplier) + (Math.abs(multiplier) - 1) * 0.6)
       )
-      .easing(jeasings.Cubic.InOut)
-      .start()
-      .onComplete(() => {
-        resetCubeGroup();
-      });
+      .easing(jeasings.Cubic.InOut);
   }
 
-  function rotate(axis: Axis, limit: number, multiplier: number): void {
+  function rotate(rotations: Rotation[]): void {
     const isAnimating = jeasings.getLength() > 0;
     if (!isAnimating) {
-      attachToRotationGroup(axis, limit);
-      animateRotationGroup(axis, multiplier);
+      resetCubeGroup();
+      attachToRotationGroup(rotations[0]);
+
+      const [firstAnimation] = rotations
+        .map((rotation) => ({
+          animation: getRotationAnimationEasing(rotation),
+          rotation,
+        }))
+        .map(({ animation }, index, mappedRotations) => {
+          const next = mappedRotations[index + 1];
+          if (next) {
+            const { animation: nextAnimation, rotation: nextRotation } = next;
+            animation.onComplete(() => {
+              resetCubeGroup();
+              attachToRotationGroup(nextRotation);
+            });
+            animation.chain(nextAnimation);
+          } else {
+            animation.onComplete(() => {
+              resetCubeGroup();
+            });
+          }
+          return animation;
+        });
+
+      firstAnimation.start();
     }
   }
 
-  const move = (moveName: Moves) => {
+  const moveToRotation = (moveName: MoveWithDoubles): Rotation => {
     moveList.push(moveName);
 
     switch (moveName) {
       case 'U':
-        return rotate('y', 0.5, -1);
+        return { axis: 'y', limit: 0.5, multiplier: -1 };
       case 'D':
-        return rotate('y', -0.5, 1);
+        return { axis: 'y', limit: -0.5, multiplier: 1 };
       case 'R':
-        return rotate('x', 0.5, -1);
+        return { axis: 'x', limit: 0.5, multiplier: -1 };
       case 'L':
-        return rotate('x', -0.5, 1);
+        return { axis: 'x', limit: -0.5, multiplier: 1 };
       case 'F':
-        return rotate('z', 0.5, -1);
+        return { axis: 'z', limit: 0.5, multiplier: -1 };
       case 'B':
-        return rotate('z', -0.5, 1);
+        return { axis: 'z', limit: -0.5, multiplier: 1 };
       case "U'":
-        return rotate('y', 0.5, 1);
+        return { axis: 'y', limit: 0.5, multiplier: 1 };
       case "D'":
-        return rotate('y', -0.5, -1);
+        return { axis: 'y', limit: -0.5, multiplier: -1 };
       case "R'":
-        return rotate('x', 0.5, 1);
+        return { axis: 'x', limit: 0.5, multiplier: 1 };
       case "L'":
-        return rotate('x', -0.5, -1);
+        return { axis: 'x', limit: -0.5, multiplier: -1 };
       case "F'":
-        return rotate('z', 0.5, 1);
+        return { axis: 'z', limit: 0.5, multiplier: 1 };
       case "B'":
-        return rotate('z', -0.5, -1);
+        return { axis: 'z', limit: -0.5, multiplier: -1 };
+      case 'U2':
+        return { axis: 'y', limit: 0.5, multiplier: -2 };
+      case 'D2':
+        return { axis: 'y', limit: -0.5, multiplier: 2 };
+      case 'R2':
+        return { axis: 'x', limit: 0.5, multiplier: -2 };
+      case 'L2':
+        return { axis: 'x', limit: -0.5, multiplier: 2 };
+      case 'F2':
+        return { axis: 'z', limit: 0.5, multiplier: -2 };
+      case 'B2':
+        return { axis: 'z', limit: -0.5, multiplier: 2 };
     }
+  };
+
+  const move = (moves: MoveWithDoubles[]) => {
+    const rotations = moves.map((moveName) => moveToRotation(moveName));
+    rotate(rotations);
   };
 
   function solve() {
@@ -141,16 +190,8 @@ export const Rubik = () => {
 
     const cube = Cube.fromString(x);
 
-    cube
-      .solve()
-      .split(' ')
-      .flatMap((c) => (c.endsWith('2') ? [c[0], c[0]] : [c]))
-      .forEach((c, index) => {
-        setTimeout(() => {
-          move(c as Moves);
-        }, index * 500);
-      });
-    if (moveList.length > 0) cube.move(Cube.inverse(moveList.join(' ')));
+    if (moveList.length > 0) cube.move(moveList.join(' '));
+    move(cube.solve().split(' ') as MoveWithDoubles[]);
   }
 
   return (

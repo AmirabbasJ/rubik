@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { Moves } from '../../domain/Moves';
+import { Move } from '../../domain/Moves';
 import classes from './Controls.module.css';
 
 interface Props {
-  move: (m: Moves) => void;
+  move: (m: Move[]) => void;
 }
 
 const keyToMoveSideMap = {
@@ -22,7 +22,7 @@ export function Controls({ move }: Props) {
 
     const moveSide = keyToMoveSideMap[key as keyof typeof keyToMoveSideMap];
     const moveName = event.shiftKey ? (`${moveSide}'` as const) : moveSide;
-    move(moveName);
+    move([moveName]);
   };
 
   useEffect(() => {
@@ -35,11 +35,11 @@ export function Controls({ move }: Props) {
   return (
     <div className={classes.container}>
       <div className={classes.controls}>
-        {Object.values(Moves).map((moveName) => (
+        {Object.values(Move).map((moveName) => (
           <button
             key={moveName}
             className={classes.button}
-            onClick={() => move(moveName)}
+            onClick={() => move([moveName])}
           >
             {moveName}
           </button>

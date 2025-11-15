@@ -1,4 +1,4 @@
-export type Moves =
+export type Move =
   | 'U'
   | 'D'
   | 'R'
@@ -12,7 +12,9 @@ export type Moves =
   | "F'"
   | "B'";
 
-export const Moves = {
+export type MoveWithDoubles = Move | 'U2' | 'D2' | 'R2' | 'L2' | 'F2' | 'B2';
+
+export const Move = {
   Up: 'U',
   Down: 'D',
   Right: 'R',
