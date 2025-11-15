@@ -2,8 +2,13 @@ import type { CSSProperties } from 'react';
 import classes from './Palette.module.css';
 
 import { useColoring } from '../../Context/ColorContext';
+import type { Side } from '../../domain/CubePiece';
 
-export const Palette = () => {
+interface Props {
+  isDisabled?: boolean;
+}
+
+export const Palette = ({ isDisabled = false }: Props) => {
   const { selectedSide, setSelectedSide, sideToColorMap } = useColoring();
 
   return (
@@ -25,10 +30,12 @@ export const Palette = () => {
               title={color}
               aria-label={`Select color ${color}`}
               onClick={() => {
-                setSelectedSide(side);
+                if (isDisabled) return;
+                setSelectedSide(side as Side);
               }}
               style={style}
               type="button"
+              disabled={isDisabled}
             />
           );
         })}

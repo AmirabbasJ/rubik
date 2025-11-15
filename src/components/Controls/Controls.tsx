@@ -4,6 +4,7 @@ import classes from './Controls.module.css';
 
 interface Props {
   move: (m: Move[]) => void;
+  disabled?: boolean;
 }
 
 const keyToMoveSideMap = {
@@ -15,8 +16,9 @@ const keyToMoveSideMap = {
   e: 'B',
 } as const;
 
-export function Controls({ move }: Props) {
+export function Controls({ move, disabled = false }: Props) {
   const handleKeyDown = (event: KeyboardEvent) => {
+    if (disabled) return;
     const key = event.key.toLowerCase();
     if (!(key in keyToMoveSideMap)) return;
 
@@ -30,13 +32,14 @@ export function Controls({ move }: Props) {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [disabled]);
 
   return (
     <div className={classes.container}>
       <div className={classes.controls}>
         {Object.values(Move).map((moveName) => (
           <button
+            disabled={disabled}
             key={moveName}
             className={classes.button}
             onClick={() => move([moveName])}

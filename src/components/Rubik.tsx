@@ -1,7 +1,7 @@
 import { Html, useContextBridge } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import jeasings from 'jeasings';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { type Group } from 'three';
 import { ColoringContext } from '../Context/ColorContext';
 import { RubikPieces as initRubikPieces, sidesToString } from '../data/Rubik';
@@ -25,6 +25,7 @@ interface Rotation {
 
 export const Rubik = () => {
   const ContextProviders = useContextBridge(ColoringContext);
+  const [isSolving, setIsSolving] = useState(false);
 
   const rotationGroupRef = useRef<Group>(null as unknown as Group);
 
@@ -103,34 +104,33 @@ export const Rubik = () => {
 
   function rotate(rotations: Rotation[]): void {
     const isAnimating = jeasings.getLength() > 0;
-    if (!isAnimating) {
-      resetCubeGroup();
-      attachToRotationGroup(rotations[0]);
+    if (isAnimating) return;
 
-      const [firstAnimation] = rotations
-        .map((rotation) => ({
-          animation: getRotationAnimationEasing(rotation),
-          rotation,
-        }))
-        .map(({ animation }, index, mappedRotations) => {
-          const next = mappedRotations[index + 1];
-          if (next) {
-            const { animation: nextAnimation, rotation: nextRotation } = next;
-            animation.onComplete(() => {
-              resetCubeGroup();
-              attachToRotationGroup(nextRotation);
-            });
-            animation.chain(nextAnimation);
-          } else {
-            animation.onComplete(() => {
-              resetCubeGroup();
-            });
-          }
-          return animation;
-        });
+    resetCubeGroup();
+    attachToRotationGroup(rotations[0]);
+    const [first] = rotations
+      .map((rotation) => ({
+        animation: getRotationAnimationEasing(rotation),
+        rotation,
+      }))
+      .map(({ animation }, index, mappedRotations) => {
+        const next = mappedRotations[index + 1];
+        if (next) {
+          animation.onComplete(() => {
+            resetCubeGroup();
+            attachToRotationGroup(next.rotation);
+          });
+          animation.chain(next.animation);
+        } else {
+          animation.onComplete(() => {
+            setIsSolving(false);
+            resetCubeGroup();
+          });
+        }
+        return animation;
+      });
 
-      firstAnimation.start();
-    }
+    first.start();
   }
 
   const moveToRotation = (moveName: MoveWithDoubles): Rotation => {
@@ -177,11 +177,15 @@ export const Rubik = () => {
   };
 
   const move = (moves: MoveWithDoubles[]) => {
+    if (isSolving) return;
+
     const rotations = moves.map((moveName) => moveToRotation(moveName));
     rotate(rotations);
   };
 
   function solve() {
+    if (isSolving) return;
+
     const x = sidesToString(
       ([...cubeGroupRef.current.children] as PieceMesh[])
         .toSorted((a, b) => a.name.localeCompare(b.name))
@@ -191,16 +195,22 @@ export const Rubik = () => {
     const cube = Cube.fromString(x);
 
     if (moveList.length > 0) cube.move(moveList.join(' '));
-    move(cube.solve().split(' ') as MoveWithDoubles[]);
+
+    setIsSolving(true);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        move(cube.solve().split(' ') as MoveWithDoubles[]);
+      });
+    });
   }
 
   return (
     <>
       <Html fullscreen>
         <ContextProviders>
-          <Navbar solve={solve} />
-          <Palette />
-          <Controls move={move} />
+          <Navbar isDisabled={isSolving} solve={solve} />
+          <Palette isDisabled={isSolving} />
+          <Controls disabled={isSolving} move={move} />
         </ContextProviders>
       </Html>
       <group ref={rotationGroupRef} />
