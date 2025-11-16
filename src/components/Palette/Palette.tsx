@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { canvasId } from '../../canvasId';
 import { useColoring } from '../../Context/ColorContext';
 import type { Side } from '../../domain/RubikPiece';
 import { ChevronDownIcon, PaletteIcon } from '../../icons';
@@ -15,9 +16,15 @@ export const Palette = ({ isDisabled = false }: { isDisabled?: boolean }) => {
 
   const choose = (side: Side | null) => {
     if (isDisabled) return;
+
     selectedSideRef.current = side;
-    if (side === selected) setSelected(null);
-    else setSelected(side);
+    if (side === selected || side === null) {
+      document.getElementById(canvasId)!.classList.remove(classes.brushCursor);
+      setSelected(null);
+    } else {
+      document.getElementById(canvasId)!.classList.add(classes.brushCursor);
+      setSelected(side);
+    }
   };
 
   useEffect(() => {
