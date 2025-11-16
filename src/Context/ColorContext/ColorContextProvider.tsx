@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, type RefObject } from 'react';
-import type { Side } from '../../domain/CubePiece';
+import type { Side } from '../../domain/RubikPiece';
 import { ColoringContext } from './ColorContext';
 
 export type ColoringContextType = {

@@ -2,7 +2,7 @@ import type { Group, MeshBasicMaterial } from 'three';
 import { type Mesh } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/Addons.js';
 import { useColoring } from '../../Context/ColorContext';
-import { type CubePiece, type Side } from '../../domain/CubePiece';
+import { type RubikPiece, type Side } from '../../domain/RubikPiece';
 import { RectangleRounded } from '../../libs/threejs-addons';
 
 export type PieceMesh = Mesh<RoundedBoxGeometry, MeshBasicMaterial>;
@@ -10,7 +10,7 @@ export type PiecesGroup = Group & {
   children: PieceMesh[];
 };
 
-type Props = CubePiece & { pieceSize: number; index: number };
+type Props = RubikPiece & { pieceSize: number; index: number };
 
 const sideConfig = {
   offset: 0.01,

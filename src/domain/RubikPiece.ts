@@ -49,7 +49,7 @@ export type Sides = [
   VisibleSide
 ];
 
-export interface CubePiece {
+export interface RubikPiece {
   position: Position;
   sides: Sides;
 }

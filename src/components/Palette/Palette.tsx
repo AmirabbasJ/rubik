@@ -2,7 +2,7 @@ import classes from './Palette.module.css';
 
 import { useState } from 'react';
 import { useColoring } from '../../Context/ColorContext';
-import type { Side } from '../../domain/CubePiece';
+import type { Side } from '../../domain/RubikPiece';
 
 interface Props {
   isDisabled?: boolean;

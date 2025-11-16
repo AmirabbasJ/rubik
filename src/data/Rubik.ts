@@ -1,5 +1,5 @@
-import type { Sides, VisibleSide } from '../domain/CubePiece';
 import type { Rubik } from '../domain/Rubik';
+import type { Sides, VisibleSide } from '../domain/RubikPiece';
 
 export const RubikPieces: Rubik = [
   { position: { x: 0, y: 0, z: 0 }, sides: ['-', '-', '-', '-', '-', '-'] },

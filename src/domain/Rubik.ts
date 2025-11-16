@@ -1,3 +1,3 @@
-import type { CubePiece } from './CubePiece';
+import type { RubikPiece } from './RubikPiece';
 
-export type Rubik = CubePiece[];
+export type Rubik = RubikPiece[];

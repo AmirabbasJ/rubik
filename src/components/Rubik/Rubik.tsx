@@ -13,9 +13,9 @@ import {
   sidesToString,
 } from '../../data/Rubik';
 import type { Axis } from '../../domain/Axis';
-import type { Sides } from '../../domain/CubePiece';
 import type { MoveWithDoubles } from '../../domain/Moves';
-import Cube from '../../libs/cubejs';
+import type { Sides } from '../../domain/RubikPiece';
+import CubeJs from '../../libs/cubejs';
 import { Controls } from '../Controls/Controls';
 import { Navbar } from '../Navbar/Navbar';
 import { Palette } from '../Palette/Palette';
@@ -202,7 +202,7 @@ export const Rubik = () => {
       ).map((ms) => ms.map((m) => m.material.name) as Sides)
     );
 
-    const cube = Cube.fromString(representation);
+    const cube = CubeJs.fromString(representation);
 
     if (moveList.length > 0) cube.move(moveList.join(' '));
 
