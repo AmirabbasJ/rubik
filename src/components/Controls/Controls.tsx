@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Move } from '../../domain/Moves';
+import { Button } from '../../ui';
 import classes from './Controls.module.css';
 
 interface Props {
@@ -38,14 +39,14 @@ export function Controls({ move, disabled = false }: Props) {
     <div className={classes.container}>
       <div className={classes.controls}>
         {Object.values(Move).map((moveName) => (
-          <button
+          <Button
+            square
             disabled={disabled}
             key={moveName}
-            className={classes.button}
             onClick={() => move([moveName])}
           >
             {moveName}
-          </button>
+          </Button>
         ))}
       </div>
     </div>

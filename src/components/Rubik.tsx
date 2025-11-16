@@ -1,4 +1,8 @@
-import { Html, useContextBridge } from '@react-three/drei';
+import {
+  Html,
+  PresentationControls,
+  useContextBridge,
+} from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import jeasings from 'jeasings';
 import { useRef, useState } from 'react';
@@ -15,7 +19,6 @@ import { Palette } from './Palette/Palette';
 import { RubikPiece, type PieceMesh } from './RubikPiece';
 
 const pieceSize = 0.75;
-const pieceSpacing = 0.03;
 
 interface Rotation {
   axis: Axis;
@@ -32,7 +35,6 @@ export const Rubik = () => {
   const cubeGroupRef = useRef<Group>(null as unknown as Group);
 
   const moveListRef = useRef<MoveWithDoubles[]>([]);
-  const moveList = moveListRef.current;
 
   //TODO random code
   // useEffect(() => {
@@ -102,7 +104,7 @@ export const Rubik = () => {
       .easing(jeasings.Cubic.InOut);
   }
 
-  function rotate(rotations: Rotation[]): void {
+  function rotate(rotations: Rotation[]) {
     const isAnimating = jeasings.getLength() > 0;
     if (isAnimating) return;
 
@@ -134,8 +136,6 @@ export const Rubik = () => {
   }
 
   const moveToRotation = (moveName: MoveWithDoubles): Rotation => {
-    moveList.push(moveName);
-
     switch (moveName) {
       case 'U':
         return { axis: 'y', limit: 0.5, multiplier: -1 };
@@ -177,7 +177,10 @@ export const Rubik = () => {
   };
 
   const move = (moves: MoveWithDoubles[]) => {
-    if (isSolving) return;
+    const isAnimating = jeasings.getLength() > 0;
+    if (isSolving || isAnimating) return;
+
+    moveListRef.current = moveListRef.current.concat(moves);
 
     const rotations = moves.map((moveName) => moveToRotation(moveName));
     rotate(rotations);
@@ -185,14 +188,26 @@ export const Rubik = () => {
 
   function solve() {
     if (isSolving) return;
+    const moveList = moveListRef.current;
 
-    const x = sidesToString(
-      ([...cubeGroupRef.current.children] as PieceMesh[])
-        .toSorted((a, b) => a.name.localeCompare(b.name))
-        .map((c) => c.material.map((m) => m.name)) as Sides[]
+    console.log(
+      moveList,
+      (
+        cubeGroupRef.current.children
+          .toSorted((a, b) => a.name.localeCompare(b.name))
+          .map((m) => m.children.slice(1)) as PieceMesh[][]
+      ).map((ms) => ms.map((m) => m.material.name) as Sides)
     );
 
-    const cube = Cube.fromString(x);
+    const representation = sidesToString(
+      (
+        cubeGroupRef.current.children
+          .toSorted((a, b) => Number(a.name) - Number(b.name))
+          .map((m) => m.children.slice(1)) as PieceMesh[][]
+      ).map((ms) => ms.map((m) => m.material.name) as Sides)
+    );
+
+    const cube = Cube.fromString(representation);
 
     if (moveList.length > 0) cube.move(moveList.join(' '));
 
@@ -206,25 +221,37 @@ export const Rubik = () => {
 
   return (
     <>
-      <Html fullscreen>
+      <Html
+        fullscreen
+        style={{ transform: 'translateY(var(--bottom-spacing))' }}
+      >
         <ContextProviders>
           <Navbar isDisabled={isSolving} solve={solve} />
           <Palette isDisabled={isSolving} />
           <Controls disabled={isSolving} move={move} />
         </ContextProviders>
       </Html>
-      <group ref={rotationGroupRef} />
-      <group ref={cubeGroupRef}>
-        {initRubikPieces.map((cube, index) => (
-          <RubikPiece
-            key={index}
-            position={cube.position}
-            sides={cube.sides}
-            pieceSize={pieceSize}
-            spacing={pieceSpacing}
-          />
-        ))}
-      </group>
+
+      <PresentationControls
+        global
+        speed={2}
+        rotation={[Math.PI / 5, Math.PI / 4, 0]}
+        polar={[-Math.PI / 2 - Math.PI / 5, Math.PI / 2 - Math.PI / 5]}
+        azimuth={[-Infinity, Infinity]}
+      >
+        <group ref={rotationGroupRef} />
+        <group ref={cubeGroupRef}>
+          {initRubikPieces.map((cube, index) => (
+            <RubikPiece
+              index={index}
+              key={index}
+              position={cube.position}
+              sides={cube.sides}
+              pieceSize={pieceSize}
+            />
+          ))}
+        </group>
+      </PresentationControls>
     </>
   );
 };

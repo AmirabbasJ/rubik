@@ -13,12 +13,12 @@ export function ColoringProvider({ children }: { children: React.ReactNode }) {
   // TODO allow setting
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [sideToColorMap, setSideToColorMap] = useState<Record<Side, string>>({
-    L: '#EF476F',
-    B: '#F78C6B',
-    U: '#FFD166',
-    R: '#06D6A0',
-    D: '#118AB2',
-    F: '#FFFFFF',
+    L: '#CC0100',
+    B: '#EE6700',
+    U: '#FFFFFF',
+    R: '#009922',
+    D: '#FFCC01',
+    F: '#2255DD',
     '-': '#000000',
   });
 

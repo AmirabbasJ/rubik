@@ -5,5 +5,9 @@
 }
 .navbar {
   height: 60px;
-  background-color: #eaeaea;
+  padding: 0 2rem;
+  display: flex;
+  /* border-bottom: 1px solid #e7e7e7; */
+  justify-content: flex-end;
+  align-items: center;
 }
