@@ -1,10 +1,10 @@
-import jeasings from 'jeasings';
 import type { Group, MeshBasicMaterial } from 'three';
 import { type Mesh } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/Addons.js';
 import { useColoring } from '../../Context/ColorContext';
 import { type RubikPiece, type Side } from '../../domain/RubikPiece';
 import { RectangleRounded } from '../../libs/threejs-addons';
+import { isAnimating } from '../../utils';
 
 export type PieceMesh = Mesh<RoundedBoxGeometry, MeshBasicMaterial>;
 export type PiecesGroup = Group & {
@@ -76,7 +76,7 @@ export function RubikPiece({ position, sides, pieceSize, index }: Props) {
             position={sidePositionMapping[index]}
             rotation={sideRotationsMapping[index]}
             onClick={(event) => {
-              if (jeasings.getLength() > 0) return;
+              if (isAnimating()) return;
               const selectedSide = selectedSideRef.current;
 
               event.stopPropagation();

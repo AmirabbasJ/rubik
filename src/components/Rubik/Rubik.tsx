@@ -14,6 +14,7 @@ import { encodeRubik } from '../../domain/encodeRubik';
 import type { MoveWithDoubles } from '../../domain/Moves';
 import type { Sides } from '../../domain/RubikPiece';
 import CubeJs from '../../libs/cubejs';
+import { isAnimating } from '../../utils';
 import { Controls } from '../Controls/Controls';
 import { Navbar } from '../Navbar/Navbar';
 import { RubikPiece, type PieceMesh } from './RubikPiece';
@@ -106,8 +107,7 @@ export const Rubik = () => {
   }
 
   function rotate(rotations: Rotation[]) {
-    const isAnimating = jeasings.getLength() > 0;
-    if (isAnimating) return;
+    if (isAnimating()) return;
 
     resetCubeGroup();
     attachToRotationGroup(rotations[0]);
@@ -178,8 +178,7 @@ export const Rubik = () => {
   };
 
   const move = (moves: MoveWithDoubles[]) => {
-    const isAnimating = jeasings.getLength() > 0;
-    if (isSolving || isAnimating) return;
+    if (isSolving || isAnimating()) return;
 
     moveListRef.current = moveListRef.current.concat(moves);
 
