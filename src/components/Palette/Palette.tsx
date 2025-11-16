@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useColoring } from '../../Context/ColorContext';
 import type { Side } from '../../domain/RubikPiece';
+import { ChevronDownIcon, PaletteIcon } from '../../icons';
+import { Button } from '../../ui';
 import classes from './Palette.module.css';
 
 export const Palette = ({ isDisabled = false }: { isDisabled?: boolean }) => {
@@ -56,31 +58,26 @@ export const Palette = ({ isDisabled = false }: { isDisabled?: boolean }) => {
       aria-haspopup="true"
       aria-expanded={open}
     >
-      <button
+      <Button
+        square
         type="button"
-        className={`${classes.toggle} ${open ? classes.open : ''}`}
+        circle
         onClick={toggle}
         aria-label="Toggle color palette"
         disabled={isDisabled}
+        className={classes.toggleButton}
       >
-        {colors
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          .map(([_, color]) => color)
-          .toSorted()
-          .toReversed()
-          .map((color, index) => {
-            return (
-              <div
-                key={index}
-                className={classes.toggleColor}
-                style={{
-                  background: color,
-                  transform: `translateY(${(index * 100) / 6}%)`,
-                }}
-              />
-            );
-          })}
-      </button>
+        <div className={`${classes.iconWrapper} ${open ? classes.open : ''}`}>
+          <PaletteIcon color="#fff" width={24} height={24} />
+        </div>
+        <div
+          className={`${classes.iconWrapper} ${classes.chevron} ${
+            open ? classes.open : ''
+          }`}
+        >
+          <ChevronDownIcon color="#fff" width={32} height={32} />
+        </div>
+      </Button>
 
       <div
         className={`${classes.menu} ${open ? classes.show : ''}`}

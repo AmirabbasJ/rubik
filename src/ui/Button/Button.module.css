@@ -2,7 +2,9 @@
   background-color: transparent;
   border: 1px solid #c4c4c4;
   color: white;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 10px 25px;
   font-size: 1rem;
   font-weight: 600;
@@ -11,10 +13,15 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
+
 .button:hover {
   opacity: 1;
 }
 
+.button:active {
+  opacity: 1;
+  background-color: #ffffff49;
+}
 .squared {
   padding: 0;
   width: 48px;
@@ -28,17 +35,7 @@
   color: #969696;
   cursor: not-allowed;
 }
-/* .button:hover {
-  background-color: #2563eb;
-}
 
-.button:active {
-  background-color: #1d4ed8;
-  transform: scale(0.97);
+.circle {
+  border-radius: 999px;
 }
-
-.button:disabled {
-  background-color: #93c5fd;
-  cursor: not-allowed;
-  opacity: 0.7;
-} */
