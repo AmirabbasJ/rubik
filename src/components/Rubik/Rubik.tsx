@@ -20,7 +20,7 @@ import { Navbar } from '../Navbar/Navbar';
 import { RubikPiece, type PieceMesh } from './RubikPiece';
 
 const pieceSize = 0.75;
-const initialRotation = Math.PI / 5;
+const initialRotation = { x: Math.PI / 5, y: Math.PI / 4 };
 
 interface Rotation {
   axis: Axis;
@@ -190,15 +190,15 @@ export const Rubik = () => {
     if (isSolving) return;
     const moveList = moveListRef.current;
 
-    const representation = encodeRubik(
+    const encodedRubik = encodeRubik(
       (
         cubeGroupRef.current.children
-          .toSorted((a, b) => Number(a.name) - Number(b.name))
+          .toSorted((meshA, meshB) => Number(meshA.name) - Number(meshB.name))
           .map((m) => m.children.slice(1)) as PieceMesh[][]
       ).map((ms) => ms.map((m) => m.material.name) as Sides)
     );
 
-    const cube = CubeJs.fromString(representation);
+    const cube = CubeJs.fromString(encodedRubik);
 
     if (moveList.length > 0) cube.move(moveList.join(' '));
 
@@ -222,10 +222,10 @@ export const Rubik = () => {
         <PresentationControls
           global
           speed={2}
-          rotation={[initialRotation, Math.PI / 4, 0]}
+          rotation={[initialRotation.x, initialRotation.y, 0]}
           polar={[
-            -Math.PI / 2 - initialRotation,
-            Math.PI / 2 - initialRotation,
+            -Math.PI / 2 - initialRotation.x,
+            Math.PI / 2 - initialRotation.x,
           ]}
           azimuth={[-Infinity, Infinity]}
         >

@@ -1,11 +1,16 @@
 import { initialRubikPieces } from '../data/Rubik';
-import { orderedSides, type Sides, type VisibleSide } from './RubikPiece';
+import {
+  orderedSides,
+  type IndexedSide,
+  type Sides,
+  type VisibleSide,
+} from './RubikPiece';
 
 const sidesIndexMap = orderedSides
   .flatMap((c) =>
     Array(9)
       .fill(c)
-      .map((c, i) => `${c}${i}` as VisibleSide)
+      .map((c, i) => `${c}${i}` as IndexedSide)
   )
   .map((c) =>
     initialRubikPieces.reduce(

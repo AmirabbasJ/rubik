@@ -41,14 +41,16 @@ export const getSideIndex = (side: Side, p: Position) => {
   return Math.abs(bAxis + 1) * 3 + Math.abs(aAxis + 1);
 };
 
-export type VisibleSide = `${Exclude<Side, '-'>}${number}` | '-';
+export type VisibleSide = Exclude<Side, '-'>;
+// TODO maybe rethink the naming
+export type IndexedSide = `${VisibleSide}${number}` | '-';
 export type Sides = [
-  VisibleSide,
-  VisibleSide,
-  VisibleSide,
-  VisibleSide,
-  VisibleSide,
-  VisibleSide
+  IndexedSide,
+  IndexedSide,
+  IndexedSide,
+  IndexedSide,
+  IndexedSide,
+  IndexedSide
 ];
 
 export interface RubikPiece {

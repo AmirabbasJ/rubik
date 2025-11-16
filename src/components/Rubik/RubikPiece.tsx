@@ -75,6 +75,30 @@ export function RubikPiece({ position, sides, pieceSize, index }: Props) {
             )}
             position={sidePositionMapping[index]}
             rotation={sideRotationsMapping[index]}
+            onPointerEnter={(event) => {
+              if (isAnimating()) return;
+              const selectedSide = selectedSideRef.current;
+
+              event.stopPropagation();
+              const { face, object } = event;
+              const piece = object as PieceMesh;
+              if (!face || !selectedSide) return;
+
+              const hoveredMaterial = piece.material;
+              hoveredMaterial.opacity = 0.8;
+            }}
+            onPointerLeave={(event) => {
+              if (isAnimating()) return;
+              const selectedSide = selectedSideRef.current;
+
+              event.stopPropagation();
+              const { face, object } = event;
+              const piece = object as PieceMesh;
+              if (!face || !selectedSide) return;
+
+              const hoveredMaterial = piece.material;
+              hoveredMaterial.opacity = 1;
+            }}
             onClick={(event) => {
               if (isAnimating()) return;
               const selectedSide = selectedSideRef.current;
@@ -92,6 +116,8 @@ export function RubikPiece({ position, sides, pieceSize, index }: Props) {
             }}
           >
             <meshBasicMaterial
+              opacity={1}
+              transparent
               name={name}
               key={index}
               color={sideToColorMap[side]}
