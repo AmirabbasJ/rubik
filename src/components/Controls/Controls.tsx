@@ -43,7 +43,9 @@ export function Controls({ move, disabled = false }: Props) {
             square
             disabled={disabled}
             key={moveName}
-            onClick={() => move([moveName])}
+            onClick={() => {
+              move([moveName]);
+            }}
           >
             {moveName}
           </Button>

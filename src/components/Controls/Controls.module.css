@@ -6,7 +6,7 @@
 .controls {
   height: 104px;
   width: 100%;
-  margin-bottom: var(--bottom-spacing);
+  margin-bottom: 30px;
   display: grid;
   justify-content: center;
   align-items: center;

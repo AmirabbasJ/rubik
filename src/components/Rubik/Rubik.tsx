@@ -7,18 +7,22 @@ import { useFrame } from '@react-three/fiber';
 import jeasings from 'jeasings';
 import { useRef, useState } from 'react';
 import { type Group } from 'three';
-import { ColoringContext } from '../Context/ColorContext';
-import { RubikPieces as initRubikPieces, sidesToString } from '../data/Rubik';
-import type { Axis } from '../domain/Axis';
-import type { Sides } from '../domain/CubePiece';
-import type { MoveWithDoubles } from '../domain/Moves';
-import Cube from '../libs/cubejs';
-import { Controls } from './Controls/Controls';
-import { Navbar } from './Navbar/Navbar';
-import { Palette } from './Palette/Palette';
+import { ColoringContext } from '../../Context/ColorContext';
+import {
+  RubikPieces as initRubikPieces,
+  sidesToString,
+} from '../../data/Rubik';
+import type { Axis } from '../../domain/Axis';
+import type { Sides } from '../../domain/CubePiece';
+import type { MoveWithDoubles } from '../../domain/Moves';
+import Cube from '../../libs/cubejs';
+import { Controls } from '../Controls/Controls';
+import { Navbar } from '../Navbar/Navbar';
+import { Palette } from '../Palette/Palette';
 import { RubikPiece, type PieceMesh } from './RubikPiece';
 
 const pieceSize = 0.75;
+const initialRotation = Math.PI / 5;
 
 interface Rotation {
   axis: Axis;
@@ -190,15 +194,6 @@ export const Rubik = () => {
     if (isSolving) return;
     const moveList = moveListRef.current;
 
-    console.log(
-      moveList,
-      (
-        cubeGroupRef.current.children
-          .toSorted((a, b) => a.name.localeCompare(b.name))
-          .map((m) => m.children.slice(1)) as PieceMesh[][]
-      ).map((ms) => ms.map((m) => m.material.name) as Sides)
-    );
-
     const representation = sidesToString(
       (
         cubeGroupRef.current.children
@@ -221,37 +216,38 @@ export const Rubik = () => {
 
   return (
     <>
-      <Html
-        fullscreen
-        style={{ transform: 'translateY(var(--bottom-spacing))' }}
-      >
+      <Html fullscreen>
         <ContextProviders>
           <Navbar isDisabled={isSolving} solve={solve} />
           <Palette isDisabled={isSolving} />
           <Controls disabled={isSolving} move={move} />
         </ContextProviders>
       </Html>
-
-      <PresentationControls
-        global
-        speed={2}
-        rotation={[Math.PI / 5, Math.PI / 4, 0]}
-        polar={[-Math.PI / 2 - Math.PI / 5, Math.PI / 2 - Math.PI / 5]}
-        azimuth={[-Infinity, Infinity]}
-      >
-        <group ref={rotationGroupRef} />
-        <group ref={cubeGroupRef}>
-          {initRubikPieces.map((cube, index) => (
-            <RubikPiece
-              index={index}
-              key={index}
-              position={cube.position}
-              sides={cube.sides}
-              pieceSize={pieceSize}
-            />
-          ))}
-        </group>
-      </PresentationControls>
+      <group position={[0, 0.3, 0]}>
+        <PresentationControls
+          global
+          speed={2}
+          rotation={[initialRotation, Math.PI / 4, 0]}
+          polar={[
+            -Math.PI / 2 - initialRotation,
+            Math.PI / 2 - initialRotation,
+          ]}
+          azimuth={[-Infinity, Infinity]}
+        >
+          <group ref={rotationGroupRef} />
+          <group ref={cubeGroupRef}>
+            {initRubikPieces.map((cube, index) => (
+              <RubikPiece
+                index={index}
+                key={index}
+                position={cube.position}
+                sides={cube.sides}
+                pieceSize={pieceSize}
+              />
+            ))}
+          </group>
+        </PresentationControls>
+      </group>
     </>
   );
 };

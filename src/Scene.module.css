@@ -1,0 +1,16 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.canvasContainer {
+  background: radial-gradient(ellipse at center, #444 0%, black 90%);
+  background-color: black;
+  user-select: none;
+  height: 100vh;
+}
+
+.canvas {
+  touch-action: none;
+}

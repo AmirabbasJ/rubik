@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react';
 import classes from './Palette.module.css';
 
 import { useColoring } from '../../Context/ColorContext';
@@ -19,8 +18,6 @@ export const Palette = ({ isDisabled = false }: Props) => {
         .filter(([side]) => side !== '-')
         .map(([side, color]) => {
           const isSelected = selectedSide === side;
-
-          const style: CSSProperties = { background: color };
           return (
             <button
               key={side}
@@ -33,7 +30,7 @@ export const Palette = ({ isDisabled = false }: Props) => {
                 if (isDisabled) return;
                 setSelectedSide(side as Side);
               }}
-              style={style}
+              style={{ background: color }}
               type="button"
               disabled={isDisabled}
             />
