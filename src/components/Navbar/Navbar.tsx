@@ -13,7 +13,7 @@ export const Navbar = ({ solve, isDisabled = false }: Props) => {
       <div className={classes.navbar}>
         <Palette isDisabled={isDisabled} />
         <Button onClick={solve} disabled={isDisabled}>
-          solve
+          SOLVE
         </Button>
       </div>
     </div>

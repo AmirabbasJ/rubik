@@ -7,7 +7,7 @@ import classes from './Scene.module.css';
 
 export function Scene() {
   return (
-    <div className={classes.canvasContainer}>
+    <div className={classes.scene}>
       <Canvas id={canvasId} className={classes.canvas}>
         <ColoringProvider>
           <Rubik />
