@@ -8,11 +8,9 @@ import jeasings from 'jeasings';
 import { useRef, useState } from 'react';
 import { type Group } from 'three';
 import { ColoringContext } from '../../Context/ColorContext';
-import {
-  RubikPieces as initRubikPieces,
-  sidesToString,
-} from '../../data/Rubik';
+import { initialRubikPieces as initRubikPieces } from '../../data/Rubik';
 import type { Axis } from '../../domain/Axis';
+import { encodeRubik } from '../../domain/encodeRubik';
 import type { MoveWithDoubles } from '../../domain/Moves';
 import type { Sides } from '../../domain/RubikPiece';
 import CubeJs from '../../libs/cubejs';
@@ -193,7 +191,7 @@ export const Rubik = () => {
     if (isSolving) return;
     const moveList = moveListRef.current;
 
-    const representation = sidesToString(
+    const representation = encodeRubik(
       (
         cubeGroupRef.current.children
           .toSorted((a, b) => Number(a.name) - Number(b.name))

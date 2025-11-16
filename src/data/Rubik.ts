@@ -1,7 +1,6 @@
 import type { Rubik } from '../domain/Rubik';
-import type { Sides, VisibleSide } from '../domain/RubikPiece';
 
-export const RubikPieces: Rubik = [
+export const initialRubikPieces: Rubik = [
   { position: { x: 0, y: 0, z: 0 }, sides: ['-', '-', '-', '-', '-', '-'] },
   { position: { x: 0, y: 1, z: 0 }, sides: ['-', '-', 'U4', '-', '-', '-'] },
   {
@@ -99,41 +98,3 @@ export const RubikPieces: Rubik = [
     sides: ['-', 'L6', '-', 'D6', '-', 'B8'],
   },
 ];
-
-export const sidesIndexMap = ['U', 'R', 'F', 'D', 'L', 'B']
-  .flatMap((c) =>
-    Array(9)
-      .fill(c)
-      .map((c, i) => `${c}${i}` as VisibleSide)
-  )
-  .map((c) =>
-    RubikPieces.reduce(
-      (acc, row, i) =>
-        row.sides.includes(c) ? [i, row.sides.indexOf(c)] : acc,
-      [-1, -1]
-    )
-  );
-
-const order = ['U', 'R', 'F', 'D', 'L', 'B'];
-
-// TODO write test for it
-export function sidesToString(sides: Sides[]): string {
-  const string = sidesIndexMap
-    .map((s) => {
-      const [index, innerIndex] = s;
-
-      const indexedSide = sides[index][innerIndex];
-      return indexedSide[0];
-    })
-    .join('');
-
-  const map = string
-    .match(/.{1,9}/g)
-    ?.flatMap((x) => x[4])
-    .reduce((acc, curr, i) => ({ ...acc, [curr]: order[i] }), {});
-
-  return string
-    .split('')
-    .map((x) => map[x])
-    .join('');
-}

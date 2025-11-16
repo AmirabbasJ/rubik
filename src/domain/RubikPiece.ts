@@ -1,4 +1,6 @@
 export type Side = 'L' | 'B' | 'U' | 'R' | 'D' | 'F' | '-';
+export const orderedSides = ['U', 'R', 'F', 'D', 'L', 'B'] as const;
+
 interface Position {
   x: number;
   y: number;
