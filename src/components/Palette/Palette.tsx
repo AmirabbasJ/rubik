@@ -1,50 +1,111 @@
-import classes from './Palette.module.css';
-
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useColoring } from '../../Context/ColorContext';
 import type { Side } from '../../domain/RubikPiece';
+import classes from './Palette.module.css';
 
-interface Props {
-  isDisabled?: boolean;
-}
-
-export const Palette = ({ isDisabled = false }: Props) => {
+export const Palette = ({ isDisabled = false }: { isDisabled?: boolean }) => {
   const { selectedSideRef, sideToColorMapRef } = useColoring();
-  const [selected, setLocalSelected] = useState<Side | null>(
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<Side | null>(
     selectedSideRef.current
   );
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const setSelected = (side: Side | null) => {
-    selectedSideRef.current = side as Side;
-    setLocalSelected(side);
+  const choose = (side: Side | null) => {
+    if (isDisabled) return;
+    selectedSideRef.current = side;
+    if (side === selected) setSelected(null);
+    else setSelected(side);
   };
 
+  useEffect(() => {
+    const onOutsideClick = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+      if (!containerRef.current.contains(e.target as Node) && !selected)
+        setOpen(false);
+    };
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !selected) setOpen(false);
+    };
+
+    document.addEventListener('mousedown', onOutsideClick);
+    document.addEventListener('keydown', onEsc);
+    return () => {
+      document.removeEventListener('mousedown', onOutsideClick);
+      document.removeEventListener('keydown', onEsc);
+    };
+  }, [selected]);
+
+  const colors = Object.entries(sideToColorMapRef.current).filter(
+    ([s]) => s !== '-'
+  );
+
+  const toggle = () => {
+    if (isDisabled) return;
+    setOpen((v) => {
+      if (v) choose(null);
+      return !v;
+    });
+  };
+
+  // TODO clsx
   return (
-    <div className={classes.palette} role="toolbar" aria-orientation="vertical">
-      {Object.entries(sideToColorMapRef.current)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        .toSorted(([_, colorA], [__, colorB]) => colorA.localeCompare(colorB))
-        .filter(([side]) => side !== '-')
-        .map(([side, color]) => {
-          const isSelected = selected === side;
+    <div
+      ref={containerRef}
+      className={classes.container}
+      aria-haspopup="true"
+      aria-expanded={open}
+    >
+      <button
+        type="button"
+        className={`${classes.toggle} ${open ? classes.open : ''}`}
+        onClick={toggle}
+        aria-label="Toggle color palette"
+        disabled={isDisabled}
+      >
+        {colors
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          .map(([_, color]) => color)
+          .toSorted()
+          .toReversed()
+          .map((color, index) => {
+            return (
+              <div
+                key={index}
+                className={classes.toggleColor}
+                style={{
+                  background: color,
+                  transform: `translateY(${(index * 100) / 6}%)`,
+                }}
+              />
+            );
+          })}
+      </button>
+
+      <div
+        className={`${classes.menu} ${open ? classes.show : ''}`}
+        role="menu"
+        aria-hidden={!open}
+      >
+        {colors.map(([side, color], i) => {
+          const delay = `${i * 35}ms`;
           return (
             <button
               key={side}
-              className={`${isSelected ? classes.selected : ''} ${
-                classes.colorButton
-              }`}
-              title={color}
-              aria-label={`Select color ${color}`}
-              onClick={() => {
-                if (isDisabled) return;
-                setSelected(side as Side);
-              }}
-              style={{ background: color }}
               type="button"
+              role="menuitem"
+              className={`${classes.item} ${
+                selected === side ? classes.selected : ''
+              }`}
+              onClick={() => choose(side as Side)}
+              style={{ background: color, transitionDelay: delay }}
               disabled={isDisabled}
+              aria-pressed={selected === side}
+              title={color}
             />
           );
         })}
+      </div>
     </div>
   );
 };

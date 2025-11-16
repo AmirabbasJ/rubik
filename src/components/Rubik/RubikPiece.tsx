@@ -1,3 +1,4 @@
+import jeasings from 'jeasings';
 import type { Group, MeshBasicMaterial } from 'three';
 import { type Mesh } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/Addons.js';
@@ -75,6 +76,7 @@ export function RubikPiece({ position, sides, pieceSize, index }: Props) {
             position={sidePositionMapping[index]}
             rotation={sideRotationsMapping[index]}
             onClick={(event) => {
+              if (jeasings.getLength() > 0) return;
               const selectedSide = selectedSideRef.current;
 
               event.stopPropagation();

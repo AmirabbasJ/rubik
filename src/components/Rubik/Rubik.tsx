@@ -18,7 +18,6 @@ import type { Sides } from '../../domain/RubikPiece';
 import CubeJs from '../../libs/cubejs';
 import { Controls } from '../Controls/Controls';
 import { Navbar } from '../Navbar/Navbar';
-import { Palette } from '../Palette/Palette';
 import { RubikPiece, type PieceMesh } from './RubikPiece';
 
 const pieceSize = 0.75;
@@ -219,7 +218,6 @@ export const Rubik = () => {
       <Html fullscreen>
         <ContextProviders>
           <Navbar isDisabled={isSolving} solve={solve} />
-          <Palette isDisabled={isSolving} />
           <Controls disabled={isSolving} move={move} />
         </ContextProviders>
       </Html>
