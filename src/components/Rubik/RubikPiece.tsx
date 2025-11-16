@@ -20,7 +20,9 @@ const sideConfig = {
 };
 
 export function RubikPiece({ position, sides, pieceSize, index }: Props) {
-  const { selectedSide, sideToColorMap } = useColoring();
+  const { selectedSideRef, sideToColorMapRef } = useColoring();
+
+  const sideToColorMap = sideToColorMapRef.current;
 
   const sidePositionMapping = [
     [pieceSize / 2 + sideConfig.offset, 0, 0],
@@ -73,6 +75,8 @@ export function RubikPiece({ position, sides, pieceSize, index }: Props) {
             position={sidePositionMapping[index]}
             rotation={sideRotationsMapping[index]}
             onClick={(event) => {
+              const selectedSide = selectedSideRef.current;
+
               event.stopPropagation();
               const { face, object } = event;
               const piece = object as PieceMesh;

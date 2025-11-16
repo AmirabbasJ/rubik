@@ -1,18 +1,17 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, type RefObject } from 'react';
 import type { Side } from '../../domain/CubePiece';
 import { ColoringContext } from './ColorContext';
 
 export type ColoringContextType = {
-  selectedSide: Side | null;
-  setSelectedSide: (c: Side | null) => void;
-  sideToColorMap: Record<Side, string>;
+  selectedSideRef: RefObject<Side | null>;
+  sideToColorMapRef: RefObject<Record<Side, string>>;
 };
 
 export function ColoringProvider({ children }: { children: React.ReactNode }) {
-  const [selectedSide, setSelectedSide] = useState<Side | null>(null);
+  const selectedSideRef = useRef<Side | null>(null);
+
   // TODO allow setting
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [sideToColorMap, setSideToColorMap] = useState<Record<Side, string>>({
+  const sideToColorMapRef = useRef<Record<Side, string>>({
     L: '#CC0100',
     B: '#EE6700',
     U: '#FFFFFF',
@@ -23,9 +22,13 @@ export function ColoringProvider({ children }: { children: React.ReactNode }) {
   });
 
   const value = useMemo(
-    () => ({ selectedSide, setSelectedSide, sideToColorMap }),
-    [selectedSide, sideToColorMap]
+    () => ({
+      selectedSideRef: selectedSideRef,
+      sideToColorMapRef: sideToColorMapRef,
+    }),
+    []
   );
+
   return (
     <ColoringContext.Provider value={value}>
       {children}
