@@ -1,10 +1,12 @@
-import { initialRubik } from '../data/initialRubik';
+import { initialRubik } from '../../data/initialRubik';
+
 import {
   orderedSides,
   type IndexedSide,
   type Sides,
   type VisibleSide,
-} from './RubikPiece';
+} from '../RubikPiece';
+import { isEncodedRubikValid } from './isEncodedRubikValid';
 
 const sidesIndexMap = orderedSides
   .flatMap((c) =>
@@ -20,17 +22,20 @@ const sidesIndexMap = orderedSides
     )
   );
 
-// TODO write test for it
-export function encodeRubik(sides: Sides[]): string {
-  const string = sidesIndexMap
+export function encodeRubikUnordered(sides: Sides[]) {
+  return sidesIndexMap
     .map((s) => {
       const [index, innerIndex] = s;
       const indexedSide = sides[index][innerIndex];
       return indexedSide[0];
     })
     .join('');
+}
+// TODO write test for it
+export function encodeRubik(sides: Sides[]): string | null {
+  const unorderedEncoded = encodeRubikUnordered(sides);
 
-  const sideSwapMap = string
+  const sideSwapMap = unorderedEncoded
     .match(/.{1,9}/g)!
     .flatMap((x) => x[4])
     .reduce(
@@ -38,7 +43,11 @@ export function encodeRubik(sides: Sides[]): string {
       {} as Record<VisibleSide, VisibleSide>
     );
 
-  return (string.split('') as VisibleSide[])
+  const encoded = (unorderedEncoded.split('') as VisibleSide[])
     .map((side) => sideSwapMap[side])
     .join('');
+
+  const isEncodedValid = isEncodedRubikValid(encoded);
+  if (!isEncodedValid) return null;
+  return encoded;
 }

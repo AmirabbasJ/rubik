@@ -1,3 +1,4 @@
+import { InvalidRubikError } from '../../domain/InvalidRubik';
 import CubeClass from './cube';
 (function () {
   var B,
@@ -321,7 +322,7 @@ import CubeClass from './cube';
         ) {
           k = 0;
           while (our[j] !== start + j) {
-            if (k > 2000) throw Error('unsolvable permutation');
+            if (k > 2000) throw new InvalidRubikError('invalid rubik');
             rotateLeft(our, 0, j);
             k++;
           }
