@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { canvasId } from '../../canvasId';
 import { useColoring } from '../../Context/ColorContext';
@@ -57,7 +58,6 @@ export const Palette = ({ isDisabled = false }: { isDisabled?: boolean }) => {
     });
   };
 
-  // TODO clsx
   return (
     <div
       ref={containerRef}
@@ -74,20 +74,20 @@ export const Palette = ({ isDisabled = false }: { isDisabled?: boolean }) => {
         disabled={isDisabled}
         className={classes.toggleButton}
       >
-        <div className={`${classes.iconWrapper} ${open ? classes.open : ''}`}>
+        <div className={clsx(classes.iconWrapper, { [classes.open]: open })}>
           <PaletteIcon color="#fff" width={24} height={24} />
         </div>
         <div
-          className={`${classes.iconWrapper} ${classes.chevron} ${
-            open ? classes.open : ''
-          }`}
+          className={clsx(classes.iconWrapper, classes.chevron, {
+            [classes.open]: open,
+          })}
         >
           <ChevronDownIcon color="#fff" width={32} height={32} />
         </div>
       </Button>
 
       <div
-        className={`${classes.menu} ${open ? classes.show : ''}`}
+        className={clsx(classes.menu, { [classes.show]: open })}
         role="menu"
         aria-hidden={!open}
       >
@@ -98,9 +98,9 @@ export const Palette = ({ isDisabled = false }: { isDisabled?: boolean }) => {
               key={side}
               type="button"
               role="menuitem"
-              className={`${classes.item} ${
-                selected === side ? classes.selected : ''
-              }`}
+              className={clsx(classes.item, {
+                [classes.selected]: selected === side,
+              })}
               onClick={() => choose(side as Side)}
               style={{ background: color, transitionDelay: delay }}
               disabled={isDisabled}

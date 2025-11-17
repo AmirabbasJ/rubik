@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React, { type ReactNode } from 'react';
 import classes from './Button.module.css';
 
@@ -18,9 +19,11 @@ export function Button({
 }: Props) {
   return (
     <button
-      className={`${classes.button} ${square ? classes.squared : ''} ${
-        circle ? classes.circle : ''
-      } ${className ?? ''}`}
+      className={clsx(
+        classes.button,
+        { [classes.squared]: square, [classes.circle]: circle },
+        className
+      )}
       disabled={disabled}
       {...props}
     >
