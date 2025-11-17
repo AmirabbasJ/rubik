@@ -35,7 +35,6 @@ export const RubikPiece = ({
   checkIsColored,
 }: Props) => {
   const { selectedSideRef, sideToColorMapRef } = useColoring();
-  console.log('here');
 
   const sideToColorMap = sideToColorMapRef.current;
 

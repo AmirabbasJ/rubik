@@ -15,7 +15,18 @@
   padding: 18px 2rem 0 10px;
   display: flex;
   justify-content: space-between;
-  /* border-bottom: 1px solid #e7e7e7; */
-  /* justify-content: flex-end; */
   align-items: center;
+}
+
+.reset {
+  animation: rotate360 1s ease;
+}
+
+@keyframes rotate360 {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(-0deg);
+  }
 }

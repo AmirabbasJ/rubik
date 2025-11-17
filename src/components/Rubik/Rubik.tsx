@@ -32,7 +32,7 @@ interface Rotation {
 export const Rubik = () => {
   const ContextProviders = useContextBridge(ColoringContext);
   const [isSolving, setIsSolving] = useState(false);
-  const [isColored, setIsColored] = useState(false);
+  const [hasColorsChanged, setHasColorsChanged] = useState(false);
 
   const rotationGroupRef = useRef<Group>(null as unknown as Group);
 
@@ -219,14 +219,15 @@ export const Rubik = () => {
       getPieceMeshes().map((ms) => ms.map((m) => m.material.name) as Sides)
     );
 
-    setIsColored(encodedSolvedRubik !== encodedRubik);
+    setHasColorsChanged(encodedSolvedRubik !== encodedRubik);
   };
   return (
     <>
       <Html fullscreen>
         <ContextProviders>
           <Navbar
-            hasChangedColor={isColored}
+            setHasColorsChanged={setHasColorsChanged}
+            hasColorsChanged={hasColorsChanged}
             getPieceMeshes={getPieceMeshes}
             isDisabled={isSolving}
             solve={solve}
