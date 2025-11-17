@@ -5,6 +5,7 @@ import { useColoring } from '../../Context/ColorContext';
 import type { Side } from '../../domain/RubikPiece';
 import { ChevronDownIcon, PaletteIcon } from '../../icons';
 import { Button } from '../../ui';
+import { genBrushUrl } from './brushUrl';
 import classes from './Palette.module.css';
 
 export const Palette = ({ isDisabled = false }: { isDisabled?: boolean }) => {
@@ -19,11 +20,16 @@ export const Palette = ({ isDisabled = false }: { isDisabled?: boolean }) => {
     if (isDisabled) return;
 
     selectedSideRef.current = side;
+    const canvasEl = document.getElementById(canvasId)!;
+    canvasEl.style.setProperty(
+      '--brush-url',
+      genBrushUrl(side ? sideToColorMapRef.current[side] : 'transparent')
+    );
     if (side === selected || side === null) {
-      document.getElementById(canvasId)!.classList.remove(classes.brushCursor);
+      canvasEl.classList.remove(classes.brushCursor);
       setSelected(null);
     } else {
-      document.getElementById(canvasId)!.classList.add(classes.brushCursor);
+      canvasEl.classList.add(classes.brushCursor);
       setSelected(side);
     }
   };
