@@ -2,7 +2,10 @@ import type { Group, MeshBasicMaterial } from 'three';
 import { type Mesh } from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/Addons.js';
 import { useColoring } from '../../Context/ColorContext';
-import { type RubikPiece, type Side } from '../../domain/RubikPiece';
+import {
+  type RubikPiece as RubikPieceType,
+  type Side,
+} from '../../domain/RubikPiece';
 import { RectangleRounded } from '../../libs/threejs-addons';
 import { isAnimating } from '../../utils';
 
@@ -11,7 +14,11 @@ export type PiecesGroup = Group & {
   children: PieceMesh[];
 };
 
-type Props = RubikPiece & { pieceSize: number; index: number };
+type Props = RubikPieceType & {
+  pieceSize: number;
+  index: number;
+  checkIsColored: VoidFunction;
+};
 
 const sideConfig = {
   offset: 0.01,
@@ -20,8 +27,15 @@ const sideConfig = {
   smoothness: 3,
 };
 
-export function RubikPiece({ position, sides, pieceSize, index }: Props) {
+export const RubikPiece = ({
+  position,
+  sides,
+  pieceSize,
+  index,
+  checkIsColored,
+}: Props) => {
   const { selectedSideRef, sideToColorMapRef } = useColoring();
+  console.log('here');
 
   const sideToColorMap = sideToColorMapRef.current;
 
@@ -113,6 +127,7 @@ export function RubikPiece({ position, sides, pieceSize, index }: Props) {
 
               clickedMaterial.name = `${selectedSide}${index}`;
               clickedMaterial.color.setStyle(sideToColorMap[selectedSide]);
+              checkIsColored();
             }}
           >
             <meshBasicMaterial
@@ -127,4 +142,4 @@ export function RubikPiece({ position, sides, pieceSize, index }: Props) {
       })}
     </group>
   );
-}
+};

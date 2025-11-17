@@ -23,8 +23,8 @@ export function ColoringProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo(
     () => ({
-      selectedSideRef: selectedSideRef,
-      sideToColorMapRef: sideToColorMapRef,
+      selectedSideRef,
+      sideToColorMapRef,
     }),
     []
   );

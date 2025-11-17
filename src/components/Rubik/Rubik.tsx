@@ -21,6 +21,7 @@ import { RubikPiece, type PieceMesh } from './RubikPiece';
 
 const pieceSize = 0.75;
 const initialRotation = { x: Math.PI / 5, y: Math.PI / 4 };
+const encodedSolvedRubik = new CubeJs().asString();
 
 interface Rotation {
   axis: Axis;
@@ -31,6 +32,7 @@ interface Rotation {
 export const Rubik = () => {
   const ContextProviders = useContextBridge(ColoringContext);
   const [isSolving, setIsSolving] = useState(false);
+  const [isColored, setIsColored] = useState(false);
 
   const rotationGroupRef = useRef<Group>(null as unknown as Group);
 
@@ -186,16 +188,18 @@ export const Rubik = () => {
     rotate(rotations);
   };
 
+  const getPieceMeshes = () => {
+    return cubeGroupRef.current.children
+      .toSorted((meshA, meshB) => Number(meshA.name) - Number(meshB.name))
+      .map((m) => m.children.slice(1)) as PieceMesh[][];
+  };
+
   function solve() {
     if (isSolving) return;
     const moveList = moveListRef.current;
 
     const encodedRubik = encodeRubik(
-      (
-        cubeGroupRef.current.children
-          .toSorted((meshA, meshB) => Number(meshA.name) - Number(meshB.name))
-          .map((m) => m.children.slice(1)) as PieceMesh[][]
-      ).map((ms) => ms.map((m) => m.material.name) as Sides)
+      getPieceMeshes().map((ms) => ms.map((m) => m.material.name) as Sides)
     );
 
     const cube = CubeJs.fromString(encodedRubik);
@@ -210,11 +214,23 @@ export const Rubik = () => {
     });
   }
 
+  const checkIsColored = () => {
+    const encodedRubik = encodeRubik(
+      getPieceMeshes().map((ms) => ms.map((m) => m.material.name) as Sides)
+    );
+
+    setIsColored(encodedSolvedRubik !== encodedRubik);
+  };
   return (
     <>
       <Html fullscreen>
         <ContextProviders>
-          <Navbar isDisabled={isSolving} solve={solve} />
+          <Navbar
+            hasChangedColor={isColored}
+            getPieceMeshes={getPieceMeshes}
+            isDisabled={isSolving}
+            solve={solve}
+          />
           <Controls disabled={isSolving} move={move} />
         </ContextProviders>
       </Html>
@@ -233,6 +249,7 @@ export const Rubik = () => {
           <group ref={cubeGroupRef}>
             {initRubikPieces.map((cube, index) => (
               <RubikPiece
+                checkIsColored={checkIsColored}
                 index={index}
                 key={index}
                 position={cube.position}
