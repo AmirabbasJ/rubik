@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useState } from 'react';
 import { useColoring } from '../../Context/ColorContext';
-import { initialRubikPieces } from '../../data/Rubik';
+import { initialRubik } from '../../data/initialRubik';
 import type { Side } from '../../domain/RubikPiece';
 import { ResetIcon } from '../../icons';
 import { Button } from '../../ui';
@@ -31,7 +31,7 @@ export const Navbar = ({
     const sideToColorMap = sideToColorMapRef.current;
     const meshes = getPieceMeshes();
 
-    initialRubikPieces
+    initialRubik
       .map(({ sides }) => sides)
       .map((sides, index) => {
         meshes[index].forEach((m, i) => {

@@ -1,6 +1,6 @@
 import type { Rubik } from '../domain/Rubik';
 
-export const initialRubikPieces: Rubik = [
+export const initialRubik: Rubik = [
   { position: { x: 0, y: 0, z: 0 }, sides: ['-', '-', '-', '-', '-', '-'] },
   { position: { x: 0, y: 1, z: 0 }, sides: ['-', '-', 'U4', '-', '-', '-'] },
   {

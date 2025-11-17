@@ -1,4 +1,4 @@
-import { initialRubikPieces } from '../data/Rubik';
+import { initialRubik } from '../data/initialRubik';
 import {
   orderedSides,
   type IndexedSide,
@@ -13,7 +13,7 @@ const sidesIndexMap = orderedSides
       .map((c, i) => `${c}${i}` as IndexedSide)
   )
   .map((c) =>
-    initialRubikPieces.reduce(
+    initialRubik.reduce(
       (acc, row, i) =>
         row.sides.includes(c) ? [i, row.sides.indexOf(c)] : acc,
       [-1, -1]

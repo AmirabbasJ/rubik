@@ -8,7 +8,7 @@ import jeasings from 'jeasings';
 import { useRef, useState } from 'react';
 import { type Group } from 'three';
 import { ColoringContext } from '../../Context/ColorContext';
-import { initialRubikPieces as initRubikPieces } from '../../data/Rubik';
+import { initialRubik as initRubikPieces } from '../../data/initialRubik';
 import type { Axis } from '../../domain/Axis';
 import { encodeRubik } from '../../domain/encodeRubik';
 import type { MoveWithDoubles } from '../../domain/Moves';
