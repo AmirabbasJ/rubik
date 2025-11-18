@@ -244,6 +244,16 @@ export function Rubik() {
           const solution = cube.solve();
           move(solution.split(' ') as MoveWithDoubles[], () => {
             moveListRef.current = [];
+            console.log(currentRotatedSolvedRubikRef.current);
+            const reverseSwap = Object.entries(swapMap).reduce(
+              (acc, [key, value]) => ({
+                ...acc,
+                [value]: key,
+              }),
+              {}
+            );
+            console.log(reverseSwap);
+
             //NOTE this key is to force three-js to re-initialize the rubik
             initialRubik
               .map((s) => s.sides)
@@ -252,13 +262,19 @@ export function Rubik() {
                 currentRotatedSolvedRubikRef.current[i].sides = sides.map(
                   (name) => {
                     if (name === '-') return '-';
-                    const newSide = swapMap![name[0] as VisibleSide];
+                    const newSide = reverseSwap![name[0] as VisibleSide];
                     const newIndex = name[1];
+
                     const newName = `${newSide}${newIndex}`;
+                    // console.log({ prev: name, new: newName });
                     return newName;
                   }
                 ) as Sides;
               });
+            console.log(
+              currentRotatedSolvedRubikRef.current.map((s) => s.sides)
+              // swapMap,
+            );
 
             setResetKey((count) => count + 1);
 
