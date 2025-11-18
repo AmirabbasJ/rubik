@@ -14,6 +14,7 @@ import {
   encodeRubik,
   encodeRubikUnordered,
 } from '../../domain/encoder/encodeRubik';
+import { shuffleEncodedCenter } from '../../domain/encoder/shuffleEncodedCenter';
 import { InvalidRubikError } from '../../domain/InvalidRubik';
 import type { MoveWithDoubles } from '../../domain/Moves';
 import type { Rubik } from '../../domain/Rubik';
@@ -58,7 +59,9 @@ export function Rubik() {
 
   function shuffle() {
     const randomCube = CubeJs.random();
-    const string = randomCube.asString();
+    const encodedShuffle = shuffleEncodedCenter(randomCube.asString());
+    console.log(encodedShuffle);
+
     const sideToColorMap = sideToColorMapRef.current;
     const nameShuffleMap = orderedSides
       .flatMap((c) =>
@@ -66,7 +69,7 @@ export function Rubik() {
           .fill(c)
           .map((c, i) => `${c}${i}`)
       )
-      .map((v, i) => ({ [v]: `${string[i]}${v[1]}` }))
+      .map((v, i) => ({ [v]: `${encodedShuffle[i]}${v[1]}` }))
       .reduce((acc, curr) => ({ ...acc, ...curr }), {});
 
     const shuffledSides = initialRubik.map(({ sides: c }) =>
@@ -224,8 +227,6 @@ export function Rubik() {
     } = encodeRubik(sides) ?? {};
 
     if (encodedRubik == null) {
-      console.log('invalid');
-
       setIsInvalid(true);
       return;
     }
@@ -247,14 +248,16 @@ export function Rubik() {
             initialRubik
               .map((s) => s.sides)
               .forEach((sides, i) => {
-                const current = currentRotatedSolvedRubikRef.current[i];
-                current.sides = sides.map((name) => {
-                  if (name === '-') return '-';
-                  const newSide = swapMap![name[0] as VisibleSide];
-                  const newIndex = name[1];
-                  const newName = `${newSide}${newIndex}`;
-                  return newName;
-                }) as Sides;
+                // const current = currentRotatedSolvedRubikRef.current[i];
+                currentRotatedSolvedRubikRef.current[i].sides = sides.map(
+                  (name) => {
+                    if (name === '-') return '-';
+                    const newSide = swapMap![name[0] as VisibleSide];
+                    const newIndex = name[1];
+                    const newName = `${newSide}${newIndex}`;
+                    return newName;
+                  }
+                ) as Sides;
               });
 
             setResetKey((count) => count + 1);

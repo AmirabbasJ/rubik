@@ -32,6 +32,9 @@ importers:
       jeasings:
         specifier: ^0.0.16
         version: 0.0.16
+      lodash.shuffle:
+        specifier: ^4.2.0
+        version: 4.2.0
       react:
         specifier: ^19.1.1
         version: 19.2.0
@@ -45,6 +48,9 @@ importers:
       '@eslint/js':
         specifier: ^9.36.0
         version: 9.39.1
+      '@types/lodash.shuffle':
+        specifier: ^4.2.9
+        version: 4.2.9
       '@types/node':
         specifier: ^24.6.0
         version: 24.10.0
@@ -599,6 +605,12 @@ packages:
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
 
+  '@types/lodash.shuffle@4.2.9':
+    resolution: {integrity: sha512-4siLZ4/vQH4T7Bm4254sG4n6hh9k7vd/bqfDVoeIwSha4Itu3MuoTxPX2I2Tue2JN94y7Y2I27QzwHZLdMlrBg==}
+
+  '@types/lodash@4.17.20':
+    resolution: {integrity: sha512-H3MHACvFUEiujabxhaI/ImO6gUrd8oOurg7LQtS7mbwIXA/cUqWrvBsaeJ23aZEPk1TAYkurjfMbSELfoCXlGA==}
+
   '@types/node@24.10.0':
     resolution: {integrity: sha512-qzQZRBqkFsYyaSWXuEHc2WR9c0a0CXwiE5FWUvn7ZM+vdy1uZLfCunD38UzhuB7YN/J11ndbDBcTmOdxJo9Q7A==}
 
@@ -1079,6 +1091,9 @@ packages:
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
+
+  lodash.shuffle@4.2.0:
+    resolution: {integrity: sha512-V/rTAABKLFjoecTZjKSv+A1ZomG8hZg8hlgeG6wwQVD9AGv+10zqqSf6mFq2tVA703Zd5R0YhSuSlXA+E/Ei+Q==}
 
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
@@ -2031,6 +2046,12 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
+  '@types/lodash.shuffle@4.2.9':
+    dependencies:
+      '@types/lodash': 4.17.20
+
+  '@types/lodash@4.17.20': {}
+
   '@types/node@24.10.0':
     dependencies:
       undici-types: 7.16.0
@@ -2547,6 +2568,8 @@ snapshots:
       p-locate: 5.0.0
 
   lodash.merge@4.6.2: {}
+
+  lodash.shuffle@4.2.0: {}
 
   lru-cache@5.1.1:
     dependencies:

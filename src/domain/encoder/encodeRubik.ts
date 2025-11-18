@@ -8,7 +8,7 @@ import {
 } from '../RubikPiece';
 import { isEncodedRubikValid } from './isEncodedRubikValid';
 
-export const sidesIndexMap = orderedSides
+const sidesIndexMap = orderedSides
   .flatMap((c) =>
     Array(9)
       .fill(c)
@@ -31,6 +31,20 @@ export function encodeRubikUnordered(sides: Sides[]) {
     })
     .join('');
 }
+
+export const orderEncoded = (unorderedEncoded: string): string => {
+  const swapMap = unorderedEncoded
+    .match(/.{1,9}/g)!
+    .flatMap((x) => x[4])
+    .reduce(
+      (acc, curr, i) => ({ ...acc, [curr]: orderedSides[i] }),
+      {} as Record<VisibleSide, VisibleSide>
+    );
+
+  return (unorderedEncoded.split('') as VisibleSide[])
+    .map((side) => swapMap[side])
+    .join('');
+};
 
 // TODO write test for it
 export function encodeRubik(sides: Sides[]): {
