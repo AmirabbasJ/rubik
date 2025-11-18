@@ -1,0 +1,33 @@
+.shuffleParent {
+  display: inline-block;
+  white-space: normal;
+  word-wrap: break-word;
+  will-change: transform;
+  line-height: 1;
+  font-size: 4rem;
+  font-family: 'Press Start 2P', sans-serif;
+  text-transform: uppercase;
+  visibility: hidden;
+}
+
+.shuffleParent.isReady {
+  visibility: visible;
+}
+
+.shuffleCharWrapper {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: baseline;
+  position: relative;
+}
+
+.shuffleCharWrapper > span {
+  display: inline-flex;
+  will-change: transform;
+}
+
+.shuffleChar {
+  line-height: 1;
+  display: inline-block;
+  text-align: center;
+}

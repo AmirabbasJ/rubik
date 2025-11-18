@@ -16,7 +16,13 @@ import {
 } from '../../domain/encoder/encodeRubik';
 import { InvalidRubikError } from '../../domain/InvalidRubik';
 import type { MoveWithDoubles } from '../../domain/Moves';
-import type { Side, Sides } from '../../domain/RubikPiece';
+import type { Rubik } from '../../domain/Rubik';
+import {
+  orderedSides,
+  type Side,
+  type Sides,
+  type VisibleSide,
+} from '../../domain/RubikPiece';
 import CubeJs from '../../libs/cubejs';
 import { isAnimating } from '../../utils';
 import { Controls } from '../Controls/Controls';
@@ -27,7 +33,7 @@ import { RubikPiece, type PieceMesh } from './RubikPiece';
 const pieceSize = 0.75;
 const initialRotation = { x: Math.PI / 5, y: Math.PI / 4 };
 
-export const Rubik = () => {
+export function Rubik() {
   const ContextProviders = useContextBridge(ColoringContext);
   const { sideToColorMapRef } = useColoring();
   const [isMoving, setIsMoving] = useState(false);
@@ -35,39 +41,59 @@ export const Rubik = () => {
   const moveListRef = useRef<MoveWithDoubles[]>([]);
   const [isInvalid, setIsInvalid] = useState(false);
   const [isSolved, setIsSolved] = useState(true);
-
-  const resetPointSidesRef = useRef(initialRubik.map(({ sides }) => sides));
+  const currentRotatedSolvedRubikRef = useRef<Rubik>(
+    JSON.parse(JSON.stringify(initialRubik))
+  );
+  const [resetKey, setResetKey] = useState(0);
 
   const rotationGroupRef = useRef<Group>(null as unknown as Group);
 
+  const getPieceMeshes = () => {
+    return cubeGroupRef.current.children
+      .toSorted((meshA, meshB) => Number(meshA.name) - Number(meshB.name))
+      .map((m) => m.children.slice(1)) as PieceMesh[][];
+  };
+
   const cubeGroupRef = useRef<Group>(null as unknown as Group);
-  //TODO random code
-  // useEffect(() => {
-  //   const randomCube = Cube.random();
-  //   const string = randomCube.asString();
-  //   const map = ['U', 'R', 'F', 'D', 'L', 'B']
-  //     .flatMap((c) =>
-  //       Array(9)
-  //         .fill(c)
-  //         .map((c, i) => `${c}${i}`)
-  //     )
-  //     .map((v, i) => ({ [v]: `${string[i]}${v[1]}` }))
-  //     .reduce((acc, curr) => ({ ...acc, ...curr }), {});
-  //   console.log(string);
 
-  //   [...cubeGroupRef.current.children]
-  //     .toSorted((a, b) => Number(a.name) - Number(b.name))
-  //     .forEach((c) =>
-  //       c.material.forEach((m) => {
-  //         if (m.name !== '' && m.name !== '-' && m.name) {
-  //           const color = sideToColorMapPalette[map[m.name][0]];
+  function shuffle() {
+    const randomCube = CubeJs.random();
+    const string = randomCube.asString();
+    const sideToColorMap = sideToColorMapRef.current;
+    const nameShuffleMap = orderedSides
+      .flatMap((c) =>
+        Array(9)
+          .fill(c)
+          .map((c, i) => `${c}${i}`)
+      )
+      .map((v, i) => ({ [v]: `${string[i]}${v[1]}` }))
+      .reduce((acc, curr) => ({ ...acc, ...curr }), {});
 
-  //           m.name = map[m.name];
-  //           m.color.setStyle(color);
-  //         }
-  //       })
-  //     );
-  // }, []);
+    const shuffledSides = initialRubik.map(({ sides: c }) =>
+      c.map((m) => {
+        if (m === '-') return '-';
+        else return nameShuffleMap[m];
+      })
+    );
+
+    getPieceMeshes().forEach((c, i) =>
+      c.map((m, i2) => {
+        const name = shuffledSides[i][i2];
+        if (
+          m.material.name !== '' &&
+          m.material.name !== '-' &&
+          m.material.name
+        ) {
+          const side = name[0] as Side;
+          const color = sideToColorMap[side];
+          m.material.name = name;
+          m.material.color.setStyle(color);
+        }
+      })
+    );
+    checkRubikStatus();
+    setIsSolved(false);
+  }
 
   useFrame(() => {
     jeasings.update();
@@ -113,8 +139,8 @@ export const Rubik = () => {
       (ms) => ms.map((m) => m.material.name) as Sides
     );
 
-    const encodedRubik = encodeRubik(sides);
-    if (encodedRubik === null) {
+    const { encoded: encodedRubik } = encodeRubik(sides) ?? {};
+    if (encodedRubik == null) {
       setIsInvalid(true);
       setHasColorsChanged(true);
       return;
@@ -127,6 +153,7 @@ export const Rubik = () => {
     setIsSolved(cube.asString() === solvedEncodedRubik);
     setIsInvalid(false);
     const unorderedEncodedRubik = encodeRubikUnordered(sides);
+
     setHasColorsChanged(solvedEncodedRubik !== unorderedEncodedRubik);
   };
 
@@ -184,24 +211,25 @@ export const Rubik = () => {
     });
   };
 
-  const getPieceMeshes = () => {
-    return cubeGroupRef.current.children
-      .toSorted((meshA, meshB) => Number(meshA.name) - Number(meshB.name))
-      .map((m) => m.children.slice(1)) as PieceMesh[][];
-  };
-
   function solve() {
     if (isMoving || isSolved) return;
 
     const sides = getPieceMeshes().map(
       (ms) => ms.map((m) => m.material.name) as Sides
     );
-    const encodedRubik = encodeRubik(sides);
+    const {
+      encoded: encodedRubik,
+      swapMap,
+      unorderedEncoded,
+    } = encodeRubik(sides) ?? {};
 
-    if (encodedRubik === null) {
+    if (encodedRubik == null) {
+      console.log('invalid');
+
       setIsInvalid(true);
       return;
     }
+
     setIsInvalid(false);
     const cube = CubeJs.fromString(encodedRubik);
 
@@ -215,9 +243,23 @@ export const Rubik = () => {
           const solution = cube.solve();
           move(solution.split(' ') as MoveWithDoubles[], () => {
             moveListRef.current = [];
-            //NOTE we consider the new rubik our universal solved state sides
-            resetPointSidesRef.current = sides;
-            setHasColorsChanged(false);
+            //NOTE this key is to force three-js to re-initialize the rubik
+            initialRubik
+              .map((s) => s.sides)
+              .forEach((sides, i) => {
+                const current = currentRotatedSolvedRubikRef.current[i];
+                current.sides = sides.map((name) => {
+                  if (name === '-') return '-';
+                  const newSide = swapMap![name[0] as VisibleSide];
+                  const newIndex = name[1];
+                  const newName = `${newSide}${newIndex}`;
+                  return newName;
+                }) as Sides;
+              });
+
+            setResetKey((count) => count + 1);
+
+            setHasColorsChanged(unorderedEncoded !== encodedRubik);
           });
         } catch (e) {
           const error = e as Error;
@@ -234,7 +276,7 @@ export const Rubik = () => {
     const sideToColorMap = sideToColorMapRef.current;
     const meshes = getPieceMeshes();
 
-    resetPointSidesRef.current.map((sides, index) => {
+    initialRubik.map(({ sides }, index) => {
       meshes[index].forEach((m, i) => {
         const name = sides[i];
         const side = name[0] as Side;
@@ -252,6 +294,7 @@ export const Rubik = () => {
       <Html fullscreen>
         <ContextProviders>
           <Navbar
+            shuffle={shuffle}
             isRubikInvalid={isInvalid}
             reset={reset}
             hasColorsChanged={hasColorsChanged}
@@ -275,8 +318,8 @@ export const Rubik = () => {
           azimuth={[-Infinity, Infinity]}
         >
           <group ref={rotationGroupRef} />
-          <group ref={cubeGroupRef}>
-            {initialRubik.map((cube, index) => (
+          <group ref={cubeGroupRef} key={resetKey}>
+            {currentRotatedSolvedRubikRef.current.map((cube, index) => (
               <RubikPiece
                 checkIsColored={checkRubikStatus}
                 index={index}
@@ -291,4 +334,4 @@ export const Rubik = () => {
       </group>
     </>
   );
-};
+}

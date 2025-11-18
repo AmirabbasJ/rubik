@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ResetIcon } from '../../icons';
 import { Button } from '../../ui';
 import FuzzyText from '../../ui/FuzzyText/FuzzyText';
+import ShuffleText from '../../ui/ShuffleText/ShuffleText';
 import { Palette } from '../Palette/Palette';
 import type { PieceMesh } from '../Rubik/RubikPiece';
 import classes from './Navbar.module.css';
@@ -15,6 +16,7 @@ interface Props {
   hasColorsChanged: boolean;
   reset: VoidFunction;
   isRubikInvalid: boolean;
+  shuffle: VoidFunction;
 }
 
 export const Navbar = ({
@@ -24,6 +26,7 @@ export const Navbar = ({
   reset,
   hasColorsChanged,
   isRubikInvalid,
+  shuffle,
 }: Props) => {
   const [isAnimatingReset, setIsAnimatingReset] = useState(false);
 
@@ -56,27 +59,43 @@ export const Navbar = ({
             <ResetIcon />
           </Button>
         </div>
-        <Button
-          title={
-            isRubikInvalid
-              ? 'Invalid Rubik'
-              : isSolved
-              ? 'Rubik is already solved!'
-              : isSolving
-              ? 'Solving...'
-              : 'Solve Rubik'
-          }
-          onClick={solve}
-          disabled={isSolving || isSolved || isRubikInvalid}
-        >
-          {isRubikInvalid ? (
-            <FuzzyText color="#ffffff66" fontSize="1.1rem">
-              SOLVE
-            </FuzzyText>
-          ) : (
-            <p>SOLVE</p>
-          )}
-        </Button>
+        <div className={classes.row}>
+          <Button
+            type="button"
+            title="Shuffle Rubik"
+            disabled={isSolving}
+            onClick={shuffle}
+          >
+            <ShuffleText
+              text="SHUFFLE"
+              duration={1}
+              stagger={0.1}
+              ease={'back.out(1.1)'}
+              style={{ fontSize: 'inherit' }}
+            />
+          </Button>
+          <Button
+            title={
+              isRubikInvalid
+                ? 'Invalid Rubik'
+                : isSolved
+                ? 'Rubik is already solved!'
+                : isSolving
+                ? 'Solving...'
+                : 'Solve Rubik'
+            }
+            onClick={solve}
+            disabled={isSolving || isSolved || isRubikInvalid}
+          >
+            {isRubikInvalid ? (
+              <FuzzyText color="#ffffff66" fontSize="1.1rem">
+                SOLVE
+              </FuzzyText>
+            ) : (
+              <p>SOLVE</p>
+            )}
+          </Button>{' '}
+        </div>
       </div>
     </div>
   );
