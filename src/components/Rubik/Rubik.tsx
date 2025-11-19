@@ -51,25 +51,28 @@ export function Rubik() {
       .map((m) => m.children.slice(1)) as PieceMesh[][];
   };
 
+  const getSides = () => {
+    const sides = getPieceMeshes().map(
+      (ms) => ms.map((m) => m.material.name) as Sides
+    );
+    return sides;
+  };
+
   const cubeGroupRef = useRef<Group>(null as unknown as Group);
 
   function shuffle() {
     const shuffledSides = getShuffledRubik();
     const sideToColorMap = sideToColorMapRef.current;
 
-    getPieceMeshes().forEach((c, i) =>
-      c.map((m, i2) => {
-        const name = shuffledSides[i][i2];
-        if (
-          m.material.name !== '' &&
-          m.material.name !== '-' &&
-          m.material.name
-        ) {
-          const side = name[0] as Side;
-          const color = sideToColorMap[side];
-          m.material.name = name;
-          m.material.color.setStyle(color);
-        }
+    getPieceMeshes().forEach((c, index) =>
+      c.forEach((m, innerIndex) => {
+        if (m.material.name === '-') return;
+
+        const name = shuffledSides[index][innerIndex];
+        const side = name[0] as Side;
+        const color = sideToColorMap[side];
+        m.material.name = name;
+        m.material.color.setStyle(color);
       })
     );
     checkRubikStatus();
@@ -116,9 +119,7 @@ export function Rubik() {
       .easing(jeasings.Cubic.InOut);
   }
   const checkRubikStatus = () => {
-    const sides = getPieceMeshes().map(
-      (ms) => ms.map((m) => m.material.name) as Sides
-    );
+    const sides = getSides();
 
     const { encoded: encodedRubik, unorderedEncoded: unorderedEncodedRubik } =
       encodeRubik(sides) ?? {};
@@ -195,9 +196,8 @@ export function Rubik() {
   function solve() {
     if (isMoving || isSolved) return;
 
-    const sides = getPieceMeshes().map(
-      (ms) => ms.map((m) => m.material.name) as Sides
-    );
+    const sides = getSides();
+
     const {
       encoded: encodedRubik,
       swapMap,

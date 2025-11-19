@@ -74,9 +74,8 @@ export const RubikPiece = ({
       </mesh>
 
       {sides.map((indexedSide, index) => {
-        const side =
+        const name =
           indexedSide === '-' ? indexedSide : (indexedSide[0] as Side);
-        const name = indexedSide === '-' ? undefined : indexedSide;
         return (
           <mesh
             key={indexedSide + index}
@@ -134,7 +133,7 @@ export const RubikPiece = ({
               transparent
               name={name}
               key={index}
-              color={sideToColorMap[side]}
+              color={sideToColorMap[name]}
             />
           </mesh>
         );
