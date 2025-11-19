@@ -44,6 +44,11 @@ export function Rubik() {
   const [resetKey, setResetKey] = useState(0);
 
   const rotationGroupRef = useRef<Group>(null as unknown as Group);
+  const cubeGroupRef = useRef<Group>(null as unknown as Group);
+
+  useFrame(() => {
+    jeasings.update();
+  });
 
   const getPieceMeshes = () => {
     return cubeGroupRef.current.children
@@ -57,8 +62,6 @@ export function Rubik() {
     );
     return sides;
   };
-
-  const cubeGroupRef = useRef<Group>(null as unknown as Group);
 
   function shuffle() {
     const shuffledSides = getShuffledRubik();
@@ -78,10 +81,6 @@ export function Rubik() {
     checkRubikStatus();
     setIsSolved(false);
   }
-
-  useFrame(() => {
-    jeasings.update();
-  });
 
   function resetCubeGroup(): void {
     const rotationGroup = rotationGroupRef.current;
@@ -118,6 +117,7 @@ export function Rubik() {
       )
       .easing(jeasings.Cubic.InOut);
   }
+
   const checkRubikStatus = () => {
     const sides = getSides();
 
@@ -218,6 +218,7 @@ export function Rubik() {
 
     doubleRequestAnimationFrame(() => {
       try {
+        //TODO re-write this with try-catch
         const solution = cube.solve();
         move(solution.split(' ') as MoveWithDoubles[], () => {
           moveListRef.current = [];
@@ -247,6 +248,7 @@ export function Rubik() {
             });
 
           setResetKey((count) => count + 1);
+          //TODO maybe we need to remove this since it's checked in `checkRubikStatus`
           setHasColorsChanged(unorderedEncoded !== encodedRubik);
         });
       } catch (e) {
@@ -272,6 +274,7 @@ export function Rubik() {
       });
     });
 
+    //TODO maybe we need to remove this since it's checked in `checkRubikStatus`
     setIsInvalid(false);
     setHasColorsChanged(false);
   }
