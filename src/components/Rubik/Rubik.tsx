@@ -11,12 +11,11 @@ import { ColoringContext, useColoring } from '../../Context/ColorContext';
 import { initialRubik } from '../../data/initialRubik';
 import { solvedEncodedRubik } from '../../domain/encoder/encodedSolvedRubik';
 import { encodeRubik } from '../../domain/encoder/encodeRubik';
-import { shuffleEncodedCenter } from '../../domain/encoder/shuffleEncodedCenter';
+import { getShuffledRubik } from '../../domain/getShuffledRubik';
 import { InvalidRubikError } from '../../domain/InvalidRubik';
 import type { MoveWithDoubles } from '../../domain/Moves';
 import type { Rubik } from '../../domain/Rubik';
 import {
-  indexedSides,
   type Side,
   type Sides,
   type VisibleSide,
@@ -55,20 +54,8 @@ export function Rubik() {
   const cubeGroupRef = useRef<Group>(null as unknown as Group);
 
   function shuffle() {
-    const randomCube = CubeJs.random();
-    const encodedShuffle = shuffleEncodedCenter(randomCube.asString());
-
+    const shuffledSides = getShuffledRubik();
     const sideToColorMap = sideToColorMapRef.current;
-    const nameShuffleMap = indexedSides
-      .map((v, i) => ({ [v]: `${encodedShuffle[i]}${v[1]}` }))
-      .reduce((acc, curr) => ({ ...acc, ...curr }), {});
-
-    const shuffledSides = initialRubik.map(({ sides: c }) =>
-      c.map((m) => {
-        if (m === '-') return '-';
-        else return nameShuffleMap[m];
-      })
-    );
 
     getPieceMeshes().forEach((c, i) =>
       c.map((m, i2) => {
