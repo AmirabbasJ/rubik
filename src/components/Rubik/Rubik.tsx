@@ -10,22 +10,19 @@ import { type Group } from 'three';
 import { ColoringContext, useColoring } from '../../Context/ColorContext';
 import { initialRubik } from '../../data/initialRubik';
 import { solvedEncodedRubik } from '../../domain/encoder/encodedSolvedRubik';
-import {
-  encodeRubik,
-  encodeRubikUnordered,
-} from '../../domain/encoder/encodeRubik';
+import { encodeRubik } from '../../domain/encoder/encodeRubik';
 import { shuffleEncodedCenter } from '../../domain/encoder/shuffleEncodedCenter';
 import { InvalidRubikError } from '../../domain/InvalidRubik';
 import type { MoveWithDoubles } from '../../domain/Moves';
 import type { Rubik } from '../../domain/Rubik';
 import {
-  orderedSides,
+  indexedSides,
   type Side,
   type Sides,
   type VisibleSide,
 } from '../../domain/RubikPiece';
 import CubeJs from '../../libs/cubejs';
-import { isAnimating } from '../../utils';
+import { doubleRequestAnimationFrame, isAnimating } from '../../utils';
 import { Controls } from '../Controls/Controls';
 import { Navbar } from '../Navbar/Navbar';
 import { moveToRotation, type Rotation } from './moveToRotation';
@@ -60,15 +57,9 @@ export function Rubik() {
   function shuffle() {
     const randomCube = CubeJs.random();
     const encodedShuffle = shuffleEncodedCenter(randomCube.asString());
-    console.log(encodedShuffle);
 
     const sideToColorMap = sideToColorMapRef.current;
-    const nameShuffleMap = orderedSides
-      .flatMap((c) =>
-        Array(9)
-          .fill(c)
-          .map((c, i) => `${c}${i}`)
-      )
+    const nameShuffleMap = indexedSides
       .map((v, i) => ({ [v]: `${encodedShuffle[i]}${v[1]}` }))
       .reduce((acc, curr) => ({ ...acc, ...curr }), {});
 
@@ -142,7 +133,9 @@ export function Rubik() {
       (ms) => ms.map((m) => m.material.name) as Sides
     );
 
-    const { encoded: encodedRubik } = encodeRubik(sides) ?? {};
+    const { encoded: encodedRubik, unorderedEncoded: unorderedEncodedRubik } =
+      encodeRubik(sides) ?? {};
+
     if (encodedRubik == null) {
       setIsInvalid(true);
       setHasColorsChanged(true);
@@ -155,8 +148,6 @@ export function Rubik() {
 
     setIsSolved(cube.asString() === solvedEncodedRubik);
     setIsInvalid(false);
-    const unorderedEncodedRubik = encodeRubikUnordered(sides);
-
     setHasColorsChanged(solvedEncodedRubik !== unorderedEncodedRubik);
   };
 
@@ -236,58 +227,48 @@ export function Rubik() {
 
     if (moveListRef.current.length > 0)
       cube.move(moveListRef.current.join(' '));
-
     setIsMoving(true);
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        try {
-          const solution = cube.solve();
-          move(solution.split(' ') as MoveWithDoubles[], () => {
-            moveListRef.current = [];
-            console.log(currentRotatedSolvedRubikRef.current);
-            const reverseSwap = Object.entries(swapMap).reduce(
-              (acc, [key, value]) => ({
-                ...acc,
-                [value]: key,
-              }),
-              {}
-            );
-            console.log(reverseSwap);
 
-            //NOTE this key is to force three-js to re-initialize the rubik
-            initialRubik
-              .map((s) => s.sides)
-              .forEach((sides, i) => {
-                // const current = currentRotatedSolvedRubikRef.current[i];
-                currentRotatedSolvedRubikRef.current[i].sides = sides.map(
-                  (name) => {
-                    if (name === '-') return '-';
-                    const newSide = reverseSwap![name[0] as VisibleSide];
-                    const newIndex = name[1];
+    doubleRequestAnimationFrame(() => {
+      try {
+        const solution = cube.solve();
+        move(solution.split(' ') as MoveWithDoubles[], () => {
+          moveListRef.current = [];
+          const reverseSwap = Object.entries(swapMap).reduce(
+            (acc, [key, value]) => ({
+              ...acc,
+              [value]: key,
+            }),
+            {}
+          );
 
-                    const newName = `${newSide}${newIndex}`;
-                    // console.log({ prev: name, new: newName });
-                    return newName;
-                  }
-                ) as Sides;
-              });
-            console.log(
-              currentRotatedSolvedRubikRef.current.map((s) => s.sides)
-              // swapMap,
-            );
+          initialRubik
+            .map((s) => s.sides)
+            .forEach((sides, i) => {
+              // const current = currentRotatedSolvedRubikRef.current[i];
+              currentRotatedSolvedRubikRef.current[i].sides = sides.map(
+                (name) => {
+                  if (name === '-') return '-';
+                  const newSide = reverseSwap![name[0] as VisibleSide];
+                  const newIndex = name[1];
 
-            setResetKey((count) => count + 1);
+                  const newName = `${newSide}${newIndex}`;
+                  // console.log({ prev: name, new: newName });
+                  return newName;
+                }
+              ) as Sides;
+            });
 
-            setHasColorsChanged(unorderedEncoded !== encodedRubik);
-          });
-        } catch (e) {
-          const error = e as Error;
-          if (error.name === InvalidRubikError.name) {
-            setIsMoving(false);
-            setIsInvalid(true);
-          }
+          setResetKey((count) => count + 1);
+          setHasColorsChanged(unorderedEncoded !== encodedRubik);
+        });
+      } catch (e) {
+        const error = e as Error;
+        if (error.name === InvalidRubikError.name) {
+          setIsMoving(false);
+          setIsInvalid(true);
         }
-      });
+      }
     });
   }
 

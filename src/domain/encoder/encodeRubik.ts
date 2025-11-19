@@ -1,26 +1,19 @@
 import { initialRubik } from '../../data/initialRubik';
 
 import {
+  indexedSides,
   orderedSides,
-  type IndexedSide,
   type Sides,
   type VisibleSide,
 } from '../RubikPiece';
 import { isEncodedRubikValid } from './isEncodedRubikValid';
 
-const sidesIndexMap = orderedSides
-  .flatMap((c) =>
-    Array(9)
-      .fill(c)
-      .map((c, i) => `${c}${i}` as IndexedSide)
+const sidesIndexMap = indexedSides.map((s) =>
+  initialRubik.reduce(
+    (acc, row, i) => (row.sides.includes(s) ? [i, row.sides.indexOf(s)] : acc),
+    [-1, -1]
   )
-  .map((c) =>
-    initialRubik.reduce(
-      (acc, row, i) =>
-        row.sides.includes(c) ? [i, row.sides.indexOf(c)] : acc,
-      [-1, -1]
-    )
-  );
+);
 
 export function encodeRubikUnordered(sides: Sides[]) {
   return sidesIndexMap
