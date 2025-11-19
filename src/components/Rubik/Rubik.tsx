@@ -21,7 +21,11 @@ import {
   type VisibleSide,
 } from '../../domain/RubikPiece';
 import CubeJs from '../../libs/cubejs';
-import { doubleRequestAnimationFrame, isAnimating } from '../../utils';
+import {
+  doubleRequestAnimationFrame,
+  inverseObject,
+  isAnimating,
+} from '../../utils';
 import { Controls } from '../Controls/Controls';
 import { Navbar } from '../Navbar/Navbar';
 import { moveToRotation, type Rotation } from './moveToRotation';
@@ -222,29 +226,19 @@ export function Rubik() {
         const solution = cube.solve();
         move(solution.split(' ') as MoveWithDoubles[], () => {
           moveListRef.current = [];
-          const reverseSwap = Object.entries(swapMap).reduce(
-            (acc, [key, value]) => ({
-              ...acc,
-              [value]: key,
-            }),
-            {}
-          );
+          const sideSwapInverseMap = inverseObject(swapMap!);
 
           initialRubik
             .map((s) => s.sides)
             .forEach((sides, i) => {
-              // const current = currentRotatedSolvedRubikRef.current[i];
-              currentRotatedSolvedRubikRef.current[i].sides = sides.map(
-                (name) => {
-                  if (name === '-') return '-';
-                  const newSide = reverseSwap![name[0] as VisibleSide];
-                  const newIndex = name[1];
-
-                  const newName = `${newSide}${newIndex}`;
-                  // console.log({ prev: name, new: newName });
-                  return newName;
-                }
-              ) as Sides;
+              const newSides = sides.map((name) => {
+                if (name === '-') return '-';
+                const newSide = sideSwapInverseMap![name[0] as VisibleSide];
+                const newIndex = name[1];
+                const newName = `${newSide}${newIndex}`;
+                return newName;
+              }) as Sides;
+              currentRotatedSolvedRubikRef.current[i].sides = newSides;
             });
 
           setResetKey((count) => count + 1);
