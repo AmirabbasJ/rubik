@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { ResetIcon, VolumeIcon, VolumeOffIcon } from '../../icons';
 import { Button } from '../../ui';
 import FuzzyText from '../../ui/FuzzyText/FuzzyText';
-import ShuffleText from '../../ui/ShuffleText/ShuffleText';
 import { Palette } from '../Palette/Palette';
 import type { PieceMesh } from '../Rubik/RubikPiece';
 import classes from './Navbar.module.css';
@@ -83,13 +82,7 @@ export const Navbar = ({
             disabled={isSolving}
             onClick={shuffle}
           >
-            <ShuffleText
-              text="SHUFFLE"
-              duration={1}
-              stagger={0.1}
-              ease={'back.out(1.1)'}
-              style={{ fontSize: 'inherit' }}
-            />
+            SHUFFLE
           </Button>
           <Button
             title={
