@@ -21,7 +21,8 @@
     "lodash.shuffle": "^4.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "three": "^0.181.0"
+    "three": "^0.181.0",
+    "use-sound": "^5.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

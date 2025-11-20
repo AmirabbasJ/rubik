@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Move } from '../../domain/Moves';
 import { Button } from '../../ui';
 import classes from './Controls.module.css';
@@ -18,22 +18,25 @@ const keyToMoveSideMap = {
 } as const;
 
 export function Controls({ move, disabled = false }: Props) {
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (disabled) return;
-    const key = event.key.toLowerCase();
-    if (!(key in keyToMoveSideMap)) return;
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (disabled) return;
+      const key = event.key.toLowerCase();
+      if (!(key in keyToMoveSideMap)) return;
 
-    const moveSide = keyToMoveSideMap[key as keyof typeof keyToMoveSideMap];
-    const moveName = event.shiftKey ? (`${moveSide}'` as const) : moveSide;
-    move([moveName]);
-  };
+      const moveSide = keyToMoveSideMap[key as keyof typeof keyToMoveSideMap];
+      const moveName = event.shiftKey ? (`${moveSide}'` as const) : moveSide;
+      move([moveName]);
+    },
+    [disabled, move]
+  );
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [disabled]);
+  }, [disabled, handleKeyDown]);
 
   return (
     <div className={classes.container}>

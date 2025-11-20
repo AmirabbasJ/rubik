@@ -5,8 +5,10 @@ import {
 } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import jeasings from 'jeasings';
-import { useRef, useState } from 'react';
+import lShuffle from 'lodash.shuffle';
+import { useCallback, useRef, useState } from 'react';
 import { type Group } from 'three';
+import useSound from 'use-sound';
 import { ColoringContext, useColoring } from '../../Context/ColorContext';
 import { initialRubik } from '../../data/initialRubik';
 import { solvedEncodedRubik } from '../../domain/encoder/encodedSolvedRubik';
@@ -33,6 +35,12 @@ import { RubikPiece, type PieceMesh } from './RubikPiece';
 
 const pieceSize = 0.75;
 const initialRotation = { x: Math.PI / 5, y: Math.PI / 4 };
+const soundEffectTimestamps = {
+  a: [0, 400] as [number, number],
+  b: [2200, 400] as [number, number],
+  c: [9100, 400] as [number, number],
+  d: [11500, 400] as [number, number],
+};
 
 export function Rubik() {
   const ContextProviders = useContextBridge(ColoringContext);
@@ -49,6 +57,16 @@ export function Rubik() {
 
   const rotationGroupRef = useRef<Group>(null as unknown as Group);
   const cubeGroupRef = useRef<Group>(null as unknown as Group);
+
+  const [play90] = useSound('/audio/sound-effects.mp3', {
+    playbackRate: 1.6,
+    sprite: soundEffectTimestamps,
+  });
+
+  const [play180] = useSound('/audio/sound-effects.mp3', {
+    playbackRate: 1.5,
+    sprite: soundEffectTimestamps,
+  });
 
   useFrame(() => {
     jeasings.update();
@@ -86,6 +104,12 @@ export function Rubik() {
     setIsSolved(false);
   }
 
+  async function playRotationSound(degree: number) {
+    const id = lShuffle(Object.keys(soundEffectTimestamps))[0];
+    const play = degree === 90 ? play90 : play180;
+    play({ id: id });
+  }
+
   function resetCubeGroup(): void {
     const rotationGroup = rotationGroupRef.current;
     const cubeGroup = cubeGroupRef.current;
@@ -117,12 +141,12 @@ export function Rubik() {
         {
           [axis]: rotationGroup.rotation[axis] + (Math.PI / 2) * multiplier,
         },
-        250 * (Math.abs(multiplier) + (Math.abs(multiplier) - 1) * 0.6)
+        250 * (Math.abs(multiplier) + (Math.abs(multiplier) - 1) * 0.1)
       )
       .easing(jeasings.Cubic.InOut);
   }
 
-  const checkRubikStatus = () => {
+  const checkRubikStatus = useCallback(() => {
     const sides = getSides();
 
     const { encoded: encodedRubik, unorderedEncoded: unorderedEncodedRubik } =
@@ -141,7 +165,7 @@ export function Rubik() {
     setIsSolved(cube.asString() === solvedEncodedRubik);
     setIsInvalid(false);
     setHasColorsChanged(solvedEncodedRubik !== unorderedEncodedRubik);
-  };
+  }, []);
 
   function rotate(rotations: Rotation[], onComplete?: VoidFunction) {
     if (isAnimating()) return;
@@ -153,11 +177,13 @@ export function Rubik() {
         animation: getRotationAnimationEasing(rotation),
         rotation,
       }))
-      .map(({ animation }, index, mappedRotations) => {
+      .map(({ animation, rotation }, index, mappedRotations) => {
         const next = mappedRotations[index + 1];
         if (next) {
           animation.onComplete(() => {
             resetCubeGroup();
+            playRotationSound(Math.abs(rotation.multiplier) * 90);
+
             attachToRotationGroup(next.rotation);
           });
           animation.chain(next.animation);
@@ -171,6 +197,7 @@ export function Rubik() {
         }
         return animation;
       });
+    playRotationSound(Math.abs(rotations[0].multiplier) * 90);
 
     first.start();
   }
