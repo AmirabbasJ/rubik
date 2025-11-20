@@ -1,4 +1,5 @@
 export * from './ChevronDownIcon';
+export * from './InfoIcon';
 export * from './PaletteIcon';
 export * from './ResetIcon';
 export * from './VolumeIcon';

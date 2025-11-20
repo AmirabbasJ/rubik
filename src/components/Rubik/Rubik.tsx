@@ -36,7 +36,7 @@ import { RubikPiece, type PieceMesh } from './RubikPiece';
 const initialRubikCopy = deepCopy(initialRubik);
 
 const pieceSize = 0.75;
-const initialRotation = { x: Math.PI / 5, y: Math.PI / 4 };
+const initialRotation = { y: Math.PI / 5, x: -Math.PI / 4 };
 
 export function Rubik() {
   const ContextProviders = useContextBridge(ColoringContext);
@@ -303,10 +303,10 @@ export function Rubik() {
         <PresentationControls
           global
           speed={2}
-          rotation={[initialRotation.x, initialRotation.y, 0]}
+          rotation={[initialRotation.y, initialRotation.x, 0]}
           polar={[
-            -Math.PI / 2 - initialRotation.x,
-            Math.PI / 2 - initialRotation.x,
+            -Math.PI / 2 - initialRotation.y,
+            Math.PI / 2 - initialRotation.y,
           ]}
           azimuth={[-Infinity, Infinity]}
         >

@@ -12,12 +12,12 @@ export function ColoringProvider({ children }: { children: React.ReactNode }) {
 
   // TODO allow setting
   const sideToColorMapRef = useRef<Record<Side, string>>({
-    L: '#FFFFFF',
+    L: '#009922',
     B: '#EE6700',
     U: '#2255DD',
-    R: '#009922',
+    R: '#CC0100',
     D: '#FFCC01',
-    F: '#CC0100',
+    F: '#FFFFFF',
     '-': '#000000',
   });
 

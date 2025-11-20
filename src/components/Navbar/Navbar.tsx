@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useState } from 'react';
-import { ResetIcon, VolumeIcon, VolumeOffIcon } from '../../icons';
+import { InfoIcon, ResetIcon, VolumeIcon, VolumeOffIcon } from '../../icons';
 import { Button } from '../../ui';
 import FuzzyText from '../../ui/FuzzyText/FuzzyText';
 import { Palette } from '../Palette/Palette';
@@ -47,6 +47,9 @@ export const Navbar = ({
     <div className={classes.container}>
       <div className={classes.navbar}>
         <div className={classes.row}>
+          <Button circle square type="button" title="Info" onClick={toggleMute}>
+            <InfoIcon width={24} height={24} />
+          </Button>
           <Button
             circle
             square
