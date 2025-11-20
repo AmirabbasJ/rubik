@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { useState } from 'react';
-import { ResetIcon } from '../../icons';
+import { ResetIcon, VolumeIcon, VolumeOffIcon } from '../../icons';
 import { Button } from '../../ui';
 import FuzzyText from '../../ui/FuzzyText/FuzzyText';
 import ShuffleText from '../../ui/ShuffleText/ShuffleText';
@@ -17,6 +17,8 @@ interface Props {
   reset: VoidFunction;
   isRubikInvalid: boolean;
   shuffle: VoidFunction;
+  isMuted: boolean;
+  toggleMute: VoidFunction;
 }
 
 export const Navbar = ({
@@ -27,6 +29,8 @@ export const Navbar = ({
   hasColorsChanged,
   isRubikInvalid,
   shuffle,
+  isMuted,
+  toggleMute,
 }: Props) => {
   const [isAnimatingReset, setIsAnimatingReset] = useState(false);
 
@@ -44,6 +48,19 @@ export const Navbar = ({
     <div className={classes.container}>
       <div className={classes.navbar}>
         <div className={classes.row}>
+          <Button
+            circle
+            square
+            type="button"
+            title="Volume"
+            onClick={toggleMute}
+          >
+            {isMuted ? (
+              <VolumeOffIcon width={24} height={24} />
+            ) : (
+              <VolumeIcon width={24} height={24} />
+            )}
+          </Button>
           <Palette isDisabled={isSolving} />
           <Button
             circle
@@ -94,7 +111,7 @@ export const Navbar = ({
             ) : (
               <p>SOLVE</p>
             )}
-          </Button>{' '}
+          </Button>
         </div>
       </div>
     </div>
