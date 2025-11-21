@@ -41,7 +41,7 @@ export class Cube {
    * @param maxDepth Optional maximum number of moves (default 22).
    * @returns A string algorithm solving the cube.
    */
-  solve(maxDepth?: string): string;
+  solve(maxDepth?: number): string;
 
   /**
    * Construct a cube from a 54‐character facelet string.
