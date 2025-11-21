@@ -28,7 +28,7 @@ export function useRubikAudio() {
   const [playTheme, { pause, sound }] = useSound('/audio/theme.mp3', {
     loop: true,
     soundEnabled: !isMuted,
-    volume: 0.4,
+    volume: 0.2,
   });
 
   function toggle() {

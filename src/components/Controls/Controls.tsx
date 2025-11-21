@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { useCallback, useEffect } from 'react';
+import { keyToMoveSideMap } from '../../domain/keyToMoveSideMap';
 import { Move } from '../../domain/Moves';
 import { ChevronRightIcon } from '../../icons';
 import { Button } from '../../ui';
@@ -12,15 +13,6 @@ interface Props {
   solutionIndex: number | null;
   gotoSolutionMove: (index: number) => void;
 }
-
-const keyToMoveSideMap = {
-  d: 'R',
-  w: 'U',
-  s: 'F',
-  a: 'L',
-  q: 'D',
-  e: 'B',
-} as const;
 
 export function Controls({
   move,

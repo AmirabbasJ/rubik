@@ -29,8 +29,10 @@ import {
   isAnimating,
 } from '../../utils';
 import { Controls } from '../Controls/Controls';
+import { InfoModal } from '../InfoModal/InfoModal';
 import { Navbar } from '../Navbar/Navbar';
 import { moveToRotation, type Rotation } from './moveToRotation';
+import classes from './Rubik.module.css';
 import { RubikPiece, type PieceMesh } from './RubikPiece';
 
 const initialRubikCopy = deepCopy(initialRubik);
@@ -53,6 +55,7 @@ export function Rubik() {
   const currentRotatedSolvedRubikRef = useRef<Rubik>(initialRubikCopy);
   const [resetKey, setResetKey] = useState(0);
   const { isMuted, playRotationAudio, toggleMute } = useRubikAudio();
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   const rotationGroupRef = useRef<Group>(null as unknown as Group);
   const cubeGroupRef = useRef<Group>(null as unknown as Group);
@@ -329,9 +332,10 @@ export function Rubik() {
 
   return (
     <>
-      <Html fullscreen>
+      <Html fullscreen className={classes.html}>
         <ContextProviders>
           <Navbar
+            setIsInfoOpen={setIsInfoOpen}
             isMuted={isMuted}
             toggleMute={toggleMute}
             shuffle={shuffle}
@@ -350,11 +354,13 @@ export function Rubik() {
             isMoving={isMoving}
             move={clientMove}
           />
+          <InfoModal isOpen={isInfoOpen} onClose={() => setIsInfoOpen(false)} />
         </ContextProviders>
       </Html>
       <group position={[0, 0.3, 0]}>
         <PresentationControls
           global
+          enabled={!isInfoOpen}
           speed={2}
           rotation={[initialRotation.y, initialRotation.x, 0]}
           polar={[

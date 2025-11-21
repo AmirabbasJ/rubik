@@ -18,6 +18,7 @@ interface Props {
   shuffle: VoidFunction;
   isMuted: boolean;
   toggleMute: VoidFunction;
+  setIsInfoOpen: (isOpen: boolean) => void;
 }
 
 export const Navbar = ({
@@ -30,6 +31,7 @@ export const Navbar = ({
   shuffle,
   isMuted,
   toggleMute,
+  setIsInfoOpen,
 }: Props) => {
   const [isAnimatingReset, setIsAnimatingReset] = useState(false);
 
@@ -37,80 +39,87 @@ export const Navbar = ({
     if (isSolving || !hasColorsChanged) return;
     setIsAnimatingReset(true);
     reset();
-    if (isAnimatingReset) return;
     setTimeout(() => {
       setIsAnimatingReset(false);
     }, 1000);
   }
 
   return (
-    <div className={classes.container}>
-      <div className={classes.navbar}>
-        <div className={classes.row}>
-          <Button circle square type="button" title="Info">
-            <InfoIcon width={24} height={24} />
-          </Button>
-          <Button
-            circle
-            square
-            type="button"
-            title="Volume"
-            onClick={toggleMute}
-          >
-            {isMuted ? (
-              <VolumeOffIcon width={24} height={24} />
-            ) : (
-              <VolumeIcon width={24} height={24} />
-            )}
-          </Button>
-          <Palette isDisabled={isSolving} />
-          <Button
-            circle
-            square
-            type="button"
-            title="Reset colors"
-            className={clsx({
-              [classes.reset]: isAnimatingReset,
-            })}
-            disabled={isSolving || !hasColorsChanged}
-            onClick={handleResetClick}
-          >
-            <ResetIcon />
-          </Button>
-        </div>
+    <>
+      <div className={classes.container}>
+        <div className={classes.navbar}>
+          <div className={classes.row}>
+            <Button
+              circle
+              square
+              type="button"
+              title="Info"
+              onClick={() => setIsInfoOpen(true)}
+            >
+              <InfoIcon width={24} height={24} />
+            </Button>
+            <Button
+              circle
+              square
+              type="button"
+              title="Volume"
+              onClick={toggleMute}
+            >
+              {isMuted ? (
+                <VolumeOffIcon width={24} height={24} />
+              ) : (
+                <VolumeIcon width={24} height={24} />
+              )}
+            </Button>
+            <Palette isDisabled={isSolving} />
+            <Button
+              circle
+              square
+              type="button"
+              title="Reset colors"
+              className={clsx({
+                [classes.reset]: isAnimatingReset,
+              })}
+              disabled={isSolving || !hasColorsChanged}
+              onClick={handleResetClick}
+            >
+              <ResetIcon />
+            </Button>
+          </div>
 
-        <div className={classes.row}>
-          <Button
-            type="button"
-            title="Shuffle Rubik"
-            disabled={isSolving}
-            onClick={shuffle}
-          >
-            SHUFFLE
-          </Button>
-          <Button
-            title={
-              isRubikInvalid
-                ? 'Invalid Rubik'
-                : isSolved
-                ? 'Rubik is already solved!'
-                : isSolving
-                ? 'Solving...'
-                : 'Solve Rubik'
-            }
-            onClick={solve}
-            disabled={isSolving || isSolved || isRubikInvalid}
-          >
-            {isRubikInvalid ? (
-              <FuzzyText color="#ffffff66" fontSize="1.1rem">
-                SOLVE
-              </FuzzyText>
-            ) : (
-              <p>SOLVE</p>
-            )}
-          </Button>
+          <div className={classes.row}>
+            <Button
+              type="button"
+              title="Shuffle Rubik"
+              disabled={isSolving}
+              onClick={shuffle}
+            >
+              SHUFFLE
+            </Button>
+            <Button
+              title={
+                isRubikInvalid
+                  ? 'Invalid Rubik'
+                  : isSolved
+                  ? 'Rubik is already solved!'
+                  : isSolving
+                  ? 'Solving...'
+                  : 'Solve Rubik'
+              }
+              onClick={solve}
+              disabled={isSolving || isSolved || isRubikInvalid}
+            >
+              {isRubikInvalid ? (
+                <FuzzyText color="#ffffff66" fontSize="1.1rem">
+                  SOLVE
+                </FuzzyText>
+              ) : (
+                <p>SOLVE</p>
+              )}
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
