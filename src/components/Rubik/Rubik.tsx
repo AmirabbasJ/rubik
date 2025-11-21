@@ -44,8 +44,10 @@ export function Rubik() {
   const [isMoving, setIsMoving] = useState(false);
   const [hasColorsChanged, setHasColorsChanged] = useState(false);
   const moveListRef = useRef<MoveWithDoubles[]>([]);
-  const [solution, setSolution] = useState<string | null>(null);
-  const [solutionIndex, setSolutionIndex] = useState<number | null>(null);
+  const [currentSolution, setCurrentSolution] = useState<string | null>(null);
+  const [currentSolutionStepIndex, setCurrentSolutionStepIndex] = useState<
+    number | null
+  >(null);
   const [isInvalid, setIsInvalid] = useState(false);
   const [isSolved, setIsSolved] = useState(true);
   const currentRotatedSolvedRubikRef = useRef<Rubik>(initialRubikCopy);
@@ -60,8 +62,8 @@ export function Rubik() {
   });
 
   const removeSolutionSteps = useCallback(() => {
-    setSolution(null);
-    setSolutionIndex(null);
+    setCurrentSolution(null);
+    setCurrentSolutionStepIndex(null);
   }, []);
 
   const getPieceMeshes = () => {
@@ -155,7 +157,11 @@ export function Rubik() {
     setHasColorsChanged(solvedEncodedRubik !== unorderedEncodedRubik);
   }, []);
 
-  function rotate(rotations: Rotation[], onComplete?: VoidFunction) {
+  function rotate(
+    rotations: Rotation[],
+    onComplete?: VoidFunction,
+    onEach?: (index: number) => void
+  ) {
     if (isAnimating()) return;
 
     resetCubeGroup();
@@ -172,7 +178,7 @@ export function Rubik() {
             resetCubeGroup();
             playRotationAudio(Math.abs(rotation.multiplier));
             // WRONG not everytime
-            setSolutionIndex(index + 1);
+            onEach?.(index);
             attachToRotationGroup(next.rotation);
           });
           animation.chain(next.animation);
@@ -187,14 +193,17 @@ export function Rubik() {
         return animation;
       });
     playRotationAudio(Math.abs(rotations[0].multiplier));
-    setSolutionIndex(0);
     first.start();
   }
 
-  const move = (moves: MoveWithDoubles[], onComplete?: VoidFunction) => {
+  const move = (
+    moves: MoveWithDoubles[],
+    onComplete?: VoidFunction,
+    onEach?: (index: number) => void
+  ) => {
     if (isMoving || isAnimating()) return;
     const rotations = moves.map((moveName) => moveToRotation(moveName));
-    rotate(rotations, onComplete);
+    rotate(rotations, onComplete, onEach);
   };
 
   const clientMove = (moves: MoveWithDoubles[]) => {
@@ -240,28 +249,35 @@ export function Rubik() {
       try {
         //TODO re-write this with try-catch
         const solution = cube.solve();
-        setSolution(solution);
-        move(solution.split(' ') as MoveWithDoubles[], () => {
-          moveListRef.current = [];
-          const sideSwapInverseMap = inverseObject(swapMap!);
+        setCurrentSolution(solution);
+        setCurrentSolutionStepIndex(0);
+        move(
+          solution.split(' ') as MoveWithDoubles[],
+          () => {
+            moveListRef.current = [];
+            const sideSwapInverseMap = inverseObject(swapMap!);
 
-          initialRubik
-            .map((s) => s.sides)
-            .forEach((sides, i) => {
-              const newSides = sides.map((name) => {
-                if (name === '-') return '-';
-                const newSide = sideSwapInverseMap![name[0] as VisibleSide];
-                const newIndex = name[1];
-                const newName = `${newSide}${newIndex}`;
-                return newName;
-              }) as Sides;
-              currentRotatedSolvedRubikRef.current[i].sides = newSides;
-            });
+            initialRubik
+              .map((s) => s.sides)
+              .forEach((sides, i) => {
+                const newSides = sides.map((name) => {
+                  if (name === '-') return '-';
+                  const newSide = sideSwapInverseMap![name[0] as VisibleSide];
+                  const newIndex = name[1];
+                  const newName = `${newSide}${newIndex}`;
+                  return newName;
+                }) as Sides;
+                currentRotatedSolvedRubikRef.current[i].sides = newSides;
+              });
 
-          setResetKey((count) => count + 1);
-          //TODO maybe we need to remove this since it's checked in `checkRubikStatus`
-          setHasColorsChanged(unorderedEncoded !== encodedRubik);
-        });
+            setResetKey((count) => count + 1);
+            //TODO maybe we need to remove this since it's checked in `checkRubikStatus`
+            setHasColorsChanged(unorderedEncoded !== encodedRubik);
+          },
+          (index) => {
+            setCurrentSolutionStepIndex(index + 1);
+          }
+        );
       } catch (e) {
         const error = e as Error;
         if (error.name === InvalidRubikError.name) {
@@ -270,6 +286,26 @@ export function Rubik() {
         }
       }
     });
+  }
+
+  function gotoSolutionMove(index: number) {
+    if (!currentSolution || currentSolutionStepIndex == null) return;
+    const solutionArray = currentSolution.split(' ');
+
+    if (currentSolutionStepIndex > index) {
+      const moves = solutionArray.slice(index, currentSolutionStepIndex);
+      const inverse = CubeJs.inverse(moves.join(' '));
+      setCurrentSolutionStepIndex(currentSolutionStepIndex - 1);
+      move(inverse.split(' ') as MoveWithDoubles[], undefined, () => {
+        setCurrentSolutionStepIndex((i) => i! - 1);
+      });
+    } else {
+      const moves = solutionArray.slice(currentSolutionStepIndex, index);
+      setCurrentSolutionStepIndex(currentSolutionStepIndex + 1);
+      move(moves as MoveWithDoubles[], undefined, () => {
+        setCurrentSolutionStepIndex((i) => i! + 1);
+      });
+    }
   }
 
   function reset() {
@@ -308,9 +344,9 @@ export function Rubik() {
             solve={solve}
           />
           <Controls
-            setSolutionIndex={setSolutionIndex}
-            solutionIndex={solutionIndex}
-            solution={solution}
+            gotoSolutionMove={gotoSolutionMove}
+            solutionIndex={currentSolutionStepIndex}
+            solution={currentSolution}
             disabled={isMoving}
             move={clientMove}
           />

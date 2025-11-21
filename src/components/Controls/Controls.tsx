@@ -10,7 +10,7 @@ interface Props {
   disabled?: boolean;
   solution?: string | null;
   solutionIndex: number | null;
-  setSolutionIndex: React.Dispatch<React.SetStateAction<number | null>>;
+  gotoSolutionMove: (index: number) => void;
 }
 
 const keyToMoveSideMap = {
@@ -26,8 +26,8 @@ export function Controls({
   move,
   disabled = false,
   solution,
-  setSolutionIndex,
   solutionIndex,
+  gotoSolutionMove,
 }: Props) {
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -80,7 +80,8 @@ export function Controls({
             >
               <button
                 onClick={() => {
-                  setSolutionIndex(index);
+                  // setSolutionIndex(index);
+                  gotoSolutionMove(index);
                 }}
               >
                 {move}

@@ -56,7 +56,7 @@ export class Cube {
    * @param algorithm Move in any of the acceptable formats.
    * @returns The inverted move/algorithm in the same type (string | number | number[]).
    */
-  static inverse(algorithm: Move): Move;
+  static inverse(algorithm: string): string;
 
   static initSolver(): void;
 

@@ -5,6 +5,7 @@ export interface Rotation {
   axis: Axis;
   limit: number;
   multiplier: number;
+  onComplete?: (index: number) => void;
 }
 
 export function moveToRotation(moveName: MoveWithDoubles): Rotation {
