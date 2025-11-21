@@ -19,6 +19,7 @@ type Props = RubikPieceType & {
   pieceSize: number;
   index: number;
   checkIsColored: VoidFunction;
+  removeSolutionSteps: VoidFunction;
 };
 
 const sideConfig = {
@@ -29,7 +30,14 @@ const sideConfig = {
 };
 
 export const RubikPiece = memo(
-  ({ position, sides, pieceSize, index, checkIsColored }: Props) => {
+  ({
+    position,
+    sides,
+    pieceSize,
+    index,
+    checkIsColored,
+    removeSolutionSteps,
+  }: Props) => {
     const { selectedSideRef, sideToColorMapRef } = useColoring();
 
     const sideToColorMap = sideToColorMapRef.current;
@@ -122,6 +130,7 @@ export const RubikPiece = memo(
                 clickedMaterial.name = `${selectedSide}${index}`;
                 clickedMaterial.color.setStyle(sideToColorMap[selectedSide]);
                 checkIsColored();
+                removeSolutionSteps();
               }}
             >
               <meshBasicMaterial

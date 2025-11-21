@@ -47,7 +47,7 @@ export const Navbar = ({
     <div className={classes.container}>
       <div className={classes.navbar}>
         <div className={classes.row}>
-          <Button circle square type="button" title="Info" onClick={toggleMute}>
+          <Button circle square type="button" title="Info">
             <InfoIcon width={24} height={24} />
           </Button>
           <Button
@@ -78,6 +78,7 @@ export const Navbar = ({
             <ResetIcon />
           </Button>
         </div>
+
         <div className={classes.row}>
           <Button
             type="button"

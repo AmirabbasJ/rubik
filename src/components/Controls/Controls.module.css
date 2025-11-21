@@ -1,16 +1,51 @@
 .container {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   bottom: 0;
   width: 100%;
+  margin-bottom: 20px;
 }
 .controls {
   height: 104px;
   width: 100%;
-  margin-bottom: 30px;
   display: grid;
   justify-content: center;
   align-items: center;
   grid-template-columns: repeat(6, minmax(0, auto));
   grid-template-rows: 1fr 1fr;
   grid-gap: 8px;
+}
+
+.solutionViewer {
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  transition: height 0.3s ease;
+}
+
+.solutionMove {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  color: #ffffff27;
+  font-size: 15px;
+  transition: color 0.3s ease;
+}
+
+.solutionMove button {
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+.solutionMove.active button {
+  color: #ffffffa9;
 }

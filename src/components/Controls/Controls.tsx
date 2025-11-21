@@ -1,11 +1,16 @@
+import clsx from 'clsx';
 import { useCallback, useEffect } from 'react';
 import { Move } from '../../domain/Moves';
+import { ChevronRightIcon } from '../../icons';
 import { Button } from '../../ui';
 import classes from './Controls.module.css';
 
 interface Props {
   move: (m: Move[]) => void;
   disabled?: boolean;
+  solution?: string | null;
+  solutionIndex: number | null;
+  setSolutionIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 const keyToMoveSideMap = {
@@ -17,7 +22,13 @@ const keyToMoveSideMap = {
   e: 'B',
 } as const;
 
-export function Controls({ move, disabled = false }: Props) {
+export function Controls({
+  move,
+  disabled = false,
+  solution,
+  setSolutionIndex,
+  solutionIndex,
+}: Props) {
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (disabled) return;
@@ -54,6 +65,33 @@ export function Controls({ move, disabled = false }: Props) {
           </Button>
         ))}
       </div>
+      {solution ? (
+        <div
+          className={clsx(classes.solutionViewer, {
+            [classes.active]: solution !== null,
+          })}
+        >
+          {solution.split(' ').map((move, index, arr) => (
+            <div
+              className={clsx(classes.solutionMove, {
+                [classes.active]: solutionIndex === index,
+              })}
+              key={index}
+            >
+              <button
+                onClick={() => {
+                  setSolutionIndex(index);
+                }}
+              >
+                {move}
+              </button>
+              {arr.length === index + 1 ? null : (
+                <ChevronRightIcon color="inherit" />
+              )}
+            </div>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 }

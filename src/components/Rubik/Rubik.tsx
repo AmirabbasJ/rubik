@@ -44,11 +44,12 @@ export function Rubik() {
   const [isMoving, setIsMoving] = useState(false);
   const [hasColorsChanged, setHasColorsChanged] = useState(false);
   const moveListRef = useRef<MoveWithDoubles[]>([]);
+  const [solution, setSolution] = useState<string | null>(null);
+  const [solutionIndex, setSolutionIndex] = useState<number | null>(null);
   const [isInvalid, setIsInvalid] = useState(false);
   const [isSolved, setIsSolved] = useState(true);
   const currentRotatedSolvedRubikRef = useRef<Rubik>(initialRubikCopy);
   const [resetKey, setResetKey] = useState(0);
-
   const { isMuted, playRotationAudio, toggleMute } = useRubikAudio();
 
   const rotationGroupRef = useRef<Group>(null as unknown as Group);
@@ -57,6 +58,11 @@ export function Rubik() {
   useFrame(() => {
     jeasings.update();
   });
+
+  const removeSolutionSteps = useCallback(() => {
+    setSolution(null);
+    setSolutionIndex(null);
+  }, []);
 
   const getPieceMeshes = () => {
     return cubeGroupRef.current.children
@@ -72,6 +78,8 @@ export function Rubik() {
   };
 
   function shuffle() {
+    removeSolutionSteps();
+
     const shuffledSides = getShuffledRubik();
     const sideToColorMap = sideToColorMapRef.current;
 
@@ -163,7 +171,8 @@ export function Rubik() {
           animation.onComplete(() => {
             resetCubeGroup();
             playRotationAudio(Math.abs(rotation.multiplier));
-
+            // WRONG not everytime
+            setSolutionIndex(index + 1);
             attachToRotationGroup(next.rotation);
           });
           animation.chain(next.animation);
@@ -178,13 +187,12 @@ export function Rubik() {
         return animation;
       });
     playRotationAudio(Math.abs(rotations[0].multiplier));
-
+    setSolutionIndex(0);
     first.start();
   }
 
   const move = (moves: MoveWithDoubles[], onComplete?: VoidFunction) => {
     if (isMoving || isAnimating()) return;
-
     const rotations = moves.map((moveName) => moveToRotation(moveName));
     rotate(rotations, onComplete);
   };
@@ -192,6 +200,7 @@ export function Rubik() {
   const clientMove = (moves: MoveWithDoubles[]) => {
     if (isMoving || isAnimating()) return;
 
+    removeSolutionSteps();
     //NOTE the moves lead to resetting solving the rubik
     const newList = moveListRef.current.concat(moves);
     const currentCube = new CubeJs();
@@ -231,6 +240,7 @@ export function Rubik() {
       try {
         //TODO re-write this with try-catch
         const solution = cube.solve();
+        setSolution(solution);
         move(solution.split(' ') as MoveWithDoubles[], () => {
           moveListRef.current = [];
           const sideSwapInverseMap = inverseObject(swapMap!);
@@ -263,6 +273,7 @@ export function Rubik() {
   }
 
   function reset() {
+    removeSolutionSteps();
     const sideToColorMap = sideToColorMapRef.current;
     const meshes = getPieceMeshes();
 
@@ -296,7 +307,13 @@ export function Rubik() {
             isSolving={isMoving}
             solve={solve}
           />
-          <Controls disabled={isMoving} move={clientMove} />
+          <Controls
+            setSolutionIndex={setSolutionIndex}
+            solutionIndex={solutionIndex}
+            solution={solution}
+            disabled={isMoving}
+            move={clientMove}
+          />
         </ContextProviders>
       </Html>
       <group position={[0, 0.3, 0]}>
@@ -314,6 +331,7 @@ export function Rubik() {
           <group ref={cubeGroupRef} key={resetKey}>
             {currentRotatedSolvedRubikRef.current.map((cube, index) => (
               <RubikPiece
+                removeSolutionSteps={removeSolutionSteps}
                 checkIsColored={checkRubikStatus}
                 index={index}
                 key={index}
