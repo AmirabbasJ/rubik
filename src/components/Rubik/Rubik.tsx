@@ -4,6 +4,7 @@ import {
   useContextBridge,
 } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
+import clsx from 'clsx';
 import jeasings from 'jeasings';
 import { useCallback, useRef, useState } from 'react';
 import { type Group } from 'three';
@@ -332,7 +333,7 @@ export function Rubik() {
 
   return (
     <>
-      <Html fullscreen className={classes.html}>
+      <Html fullscreen className={clsx({ [classes.html]: isInfoOpen })}>
         <ContextProviders>
           <Navbar
             setIsInfoOpen={setIsInfoOpen}

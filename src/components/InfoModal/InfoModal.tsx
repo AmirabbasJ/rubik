@@ -60,7 +60,10 @@ export const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
           </button>
 
           <div className={classes.content}>
-            <h1 className={classes.title}>Rubik</h1>
+            <div className={classes.titleContainer}>
+              <img src="/images/logo.png" className={classes.logo} />
+              <h1 className={classes.title}>Rubik</h1>
+            </div>
 
             <section className={classes.section}>
               <h2 className={classes.sectionTitle}>Features</h2>
@@ -96,9 +99,6 @@ export const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
               <h2 className={classes.sectionTitle}>Keyboard Controls</h2>
               <div className={classes.controlsList}>
                 <div className={classes.controlGroup}>
-                  <span className={classes.controlGroupLabel}>
-                    Rotate Faces:
-                  </span>
                   <div className={classes.movesList}>
                     {Object.entries(keyToMoveSideMap).map(([key, side]) => (
                       <div key={key} className={classes.moveItem}>
