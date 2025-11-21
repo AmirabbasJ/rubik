@@ -1,8 +1,4 @@
-import {
-  Html,
-  PresentationControls,
-  useContextBridge,
-} from '@react-three/drei';
+import { Html, useContextBridge } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import clsx from 'clsx';
 import jeasings from 'jeasings';
@@ -23,6 +19,7 @@ import {
 } from '../../domain/RubikPiece';
 import { useRubikAudio } from '../../hooks/useRubikAudio';
 import CubeJs from '../../libs/cubejs';
+import { CustomPresentationControls } from '../../libs/threejs-addons/CustomPresentationControls';
 import {
   deepCopy,
   doubleRequestAnimationFrame,
@@ -359,15 +356,12 @@ export function Rubik() {
         </ContextProviders>
       </Html>
       <group position={[0, 0.3, 0]}>
-        <PresentationControls
+        <CustomPresentationControls
           global
           enabled={!isInfoOpen}
           speed={2}
           rotation={[initialRotation.y, initialRotation.x, 0]}
-          polar={[
-            -Math.PI / 2 - initialRotation.y,
-            Math.PI / 2 - initialRotation.y,
-          ]}
+          polar={[-Infinity - initialRotation.y, Infinity - initialRotation.y]}
           azimuth={[-Infinity, Infinity]}
         >
           <group ref={rotationGroupRef} />
@@ -384,7 +378,7 @@ export function Rubik() {
               />
             ))}
           </group>
-        </PresentationControls>
+        </CustomPresentationControls>
       </group>
     </>
   );
