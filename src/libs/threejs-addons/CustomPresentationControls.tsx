@@ -76,7 +76,7 @@ export function CustomPresentationControls({
   });
 
   const ref = React.useRef<Group>(null!);
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     easing.damp3(ref.current.scale, animation.scale, animation.damping, delta);
     easing.dampE(
       ref.current.rotation,
