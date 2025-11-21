@@ -17,6 +17,7 @@ import {
   type Sides,
   type VisibleSide,
 } from '../../domain/RubikPiece';
+import { useResponsiveCamera } from '../../hooks/useReponsiveCamera';
 import { useRubikAudio } from '../../hooks/useRubikAudio';
 import CubeJs from '../../libs/cubejs';
 import { PresentationControlsNoInverse } from '../../libs/threejs-addons/PresentationControlsNoInverse';
@@ -61,6 +62,8 @@ export function Rubik() {
   useFrame(() => {
     jeasings.update();
   });
+
+  useResponsiveCamera();
 
   const removeSolutionSteps = useCallback(() => {
     setCurrentSolution(null);

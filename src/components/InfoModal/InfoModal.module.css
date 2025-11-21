@@ -317,3 +317,9 @@
 .holdingShift.holdingShift kbd {
   opacity: 0.5;
 }
+
+@media (max-width: 640px) {
+  .modal {
+    width: 300px;
+  }
+}
