@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useFrame, useThree } from '@react-three/fiber';
 import { useGesture } from '@use-gesture/react';
 import { easing } from 'maath';
@@ -19,7 +21,7 @@ export type PresentationControlProps = {
   domElement?: HTMLElement;
 };
 
-export function CustomPresentationControls({
+export function PresentationControlsNoInverse({
   enabled = true,
   snap,
   global,

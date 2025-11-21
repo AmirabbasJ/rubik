@@ -19,7 +19,7 @@ import {
 } from '../../domain/RubikPiece';
 import { useRubikAudio } from '../../hooks/useRubikAudio';
 import CubeJs from '../../libs/cubejs';
-import { CustomPresentationControls } from '../../libs/threejs-addons/CustomPresentationControls';
+import { PresentationControlsNoInverse } from '../../libs/threejs-addons/PresentationControlsNoInverse';
 import {
   deepCopy,
   doubleRequestAnimationFrame,
@@ -356,7 +356,7 @@ export function Rubik() {
         </ContextProviders>
       </Html>
       <group position={[0, 0.3, 0]}>
-        <CustomPresentationControls
+        <PresentationControlsNoInverse
           global
           enabled={!isInfoOpen}
           speed={2}
@@ -378,7 +378,7 @@ export function Rubik() {
               />
             ))}
           </group>
-        </CustomPresentationControls>
+        </PresentationControlsNoInverse>
       </group>
     </>
   );
