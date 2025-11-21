@@ -1,13 +1,7 @@
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { keyToMoveSideMap } from '../../domain/keyToMoveSideMap';
-import {
-  CloseIcon,
-  CoffeeIcon,
-  CubeIcon,
-  GitHubIcon,
-  HeartIcon,
-} from '../../icons';
+import { CloseIcon, CubeIcon, GitHubIcon, HeartIcon } from '../../icons';
 import { Button } from '../../ui';
 import classes from './InfoModal.module.css';
 
@@ -137,7 +131,7 @@ export const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
                   </a>
                 </Button>
 
-                <Button className={classes.supportLinkButton}>
+                {/* <Button className={classes.supportLinkButton}>
                   <a
                     href="https://buymeacoffee.com"
                     target="_blank"
@@ -147,7 +141,7 @@ export const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
                     <CoffeeIcon width={20} height={20} />
                     Buy Me a Coffee
                   </a>
-                </Button>
+                </Button> */}
               </div>
             </section>
 
