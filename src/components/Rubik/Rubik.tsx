@@ -347,7 +347,7 @@ export function Rubik() {
             gotoSolutionMove={gotoSolutionMove}
             solutionIndex={currentSolutionStepIndex}
             solution={currentSolution}
-            disabled={isMoving}
+            isMoving={isMoving}
             move={clientMove}
           />
         </ContextProviders>

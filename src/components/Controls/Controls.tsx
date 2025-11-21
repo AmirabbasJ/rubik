@@ -7,7 +7,7 @@ import classes from './Controls.module.css';
 
 interface Props {
   move: (m: Move[]) => void;
-  disabled?: boolean;
+  isMoving: boolean;
   solution?: string | null;
   solutionIndex: number | null;
   gotoSolutionMove: (index: number) => void;
@@ -24,14 +24,14 @@ const keyToMoveSideMap = {
 
 export function Controls({
   move,
-  disabled = false,
+  isMoving,
   solution,
   solutionIndex,
   gotoSolutionMove,
 }: Props) {
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (disabled) return;
+      if (isMoving) return;
       const key = event.key.toLowerCase();
       if (!(key in keyToMoveSideMap)) return;
 
@@ -39,7 +39,7 @@ export function Controls({
       const moveName = event.shiftKey ? (`${moveSide}'` as const) : moveSide;
       move([moveName]);
     },
-    [disabled, move]
+    [isMoving, move]
   );
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export function Controls({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [disabled, handleKeyDown]);
+  }, [isMoving, handleKeyDown]);
 
   return (
     <div className={classes.container}>
@@ -55,7 +55,7 @@ export function Controls({
         {Object.values(Move).map((moveName) => (
           <Button
             square
-            disabled={disabled}
+            disabled={isMoving}
             key={moveName}
             onClick={() => {
               move([moveName]);
@@ -65,34 +65,31 @@ export function Controls({
           </Button>
         ))}
       </div>
-      {solution ? (
-        <div
-          className={clsx(classes.solutionViewer, {
-            [classes.active]: solution !== null,
-          })}
-        >
-          {solution.split(' ').map((move, index, arr) => (
-            <div
-              className={clsx(classes.solutionMove, {
-                [classes.active]: solutionIndex === index,
-              })}
-              key={index}
-            >
-              <button
-                onClick={() => {
-                  // setSolutionIndex(index);
-                  gotoSolutionMove(index);
-                }}
+
+      <div className={classes.solutionViewer}>
+        {solution
+          ? solution.split(' ').map((move, index, arr) => (
+              <div
+                className={clsx(classes.solutionMove, {
+                  [classes.active]: solutionIndex === index,
+                })}
+                key={index}
               >
-                {move}
-              </button>
-              {arr.length === index + 1 ? null : (
-                <ChevronRightIcon color="inherit" />
-              )}
-            </div>
-          ))}
-        </div>
-      ) : null}
+                <button
+                  onClick={() => {
+                    if (!isMoving) gotoSolutionMove(index);
+                  }}
+                  disabled={isMoving}
+                >
+                  {move}
+                </button>
+                {arr.length === index + 1 ? null : (
+                  <ChevronRightIcon color="inherit" />
+                )}
+              </div>
+            ))
+          : null}
+      </div>
     </div>
   );
 }

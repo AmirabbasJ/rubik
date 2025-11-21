@@ -2,6 +2,11 @@
   font-family: rubik;
   src: url('/font/Rubik.ttf') format('truetype');
 }
+
+html {
+  background-color: black;
+}
+
 * {
   padding: 0;
   margin: 0;

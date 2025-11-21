@@ -7,6 +7,7 @@
   width: 100%;
   margin-bottom: 20px;
 }
+
 .controls {
   height: 104px;
   width: 100%;
@@ -25,7 +26,6 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 5px;
-  transition: height 0.3s ease;
 }
 
 .solutionMove {
@@ -46,6 +46,7 @@
   font-family: inherit;
   cursor: pointer;
 }
+
 .solutionMove.active button {
   color: #ffffffa9;
 }
