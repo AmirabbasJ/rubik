@@ -2,7 +2,7 @@
   background: radial-gradient(ellipse at center, #444 0%, black 90%);
   background-color: black;
   user-select: none;
-  height: 100vh;
+  height: 100dvh;
 }
 
 .canvas {
