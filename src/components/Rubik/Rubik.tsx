@@ -6,7 +6,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { type Group } from 'three';
 import { ColoringContext, useColoring } from '../../Context/ColorContext';
 import { initialRubik } from '../../data/initialRubik';
-import { solvedEncodedRubik } from '../../domain/encoder/encodedSolvedRubik';
 import { encodeRubik, type Encoded } from '../../domain/encoder/encodeRubik';
 import { getShuffledRubik } from '../../domain/getShuffledRubik';
 import { InvalidRubikError } from '../../domain/InvalidRubik';
@@ -20,7 +19,7 @@ import {
 import { useResponsiveCamera } from '../../hooks/useReponsiveCamera';
 import { useRubikAudio } from '../../hooks/useRubikAudio';
 import { CubeJs } from '../../libs/cubejs';
-import { PresentationControlsNoInverse } from '../../libs/threejs-addons/PresentationControlsNoInverse';
+import { PresentationControlsNoInverse } from '../../libs/threejs-addons';
 import {
   deepCopy,
   doubleRequestAnimationFrame,
@@ -33,9 +32,11 @@ import { Navbar } from '../Navbar/Navbar';
 import { moveToRotation, type Rotation } from './moveToRotation';
 import classes from './Rubik.module.css';
 import { RubikPiece, type PieceMesh } from './RubikPiece';
+
 const initialRubikCopy = deepCopy(initialRubik);
 const pieceSize = 0.75;
 const initialRotation = { y: Math.PI / 5, x: -Math.PI / 4 };
+const solvedEncodedRubik = CubeJs.solvedEncoded;
 
 export function Rubik() {
   const ContextProviders = useContextBridge(ColoringContext);
@@ -64,12 +65,16 @@ export function Rubik() {
   useResponsiveCamera();
 
   function onSolve(
-    result: string,
+    solution: string | null,
     { swapMap, unorderedEncoded, cube }: Encoded
   ) {
+    if (solution === null) {
+      setIsMoving(false);
+      setIsInvalid(true);
+      return;
+    }
     doubleRequestAnimationFrame(() => {
       try {
-        const solution = result;
         setCurrentSolution(solution);
         setCurrentSolutionStepIndex(0);
         move(
@@ -264,7 +269,7 @@ export function Rubik() {
     removeSolutionSteps();
     //NOTE the moves lead to resetting solving the rubik
     const newList = moveListRef.current.concat(moves);
-    const currentCube = CubeJs.solvedEncoded;
+    const currentCube = solvedEncodedRubik;
     const movedCube = CubeJs.move(currentCube, newList);
     if (movedCube === solvedEncodedRubik) moveListRef.current = [];
     else moveListRef.current = newList;
@@ -298,7 +303,7 @@ export function Rubik() {
     CubeJs.solve({
       swapMap: swapMap!,
       unorderedEncoded: unorderedEncoded!,
-      cube: movedCube.replace('U', 'D'),
+      cube: movedCube,
     });
   }
 

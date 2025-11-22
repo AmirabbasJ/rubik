@@ -1,21 +1,19 @@
 import type { Encoded } from '../../domain/encoder/encodeRubik';
-import Cube from './internal';
+import Cube, { type CubeState } from './internal/cube.js';
 
 export class CubeJs {
   static solvedEncoded: string = new Cube().asString();
   static worker: Worker;
 
-  static initSolver(cb: (solution: string, encoded: Encoded) => void) {
+  static initSolver(cb: (solution: string | null, encoded: Encoded) => void) {
     if (this.worker) this.worker.terminate();
 
     this.worker = new Worker(
-      new URL('./internal/solver/solver.js', import.meta.url)
+      new URL('./internal/solverWorker.js', import.meta.url)
     );
     this.worker.postMessage({ type: 'generateTables' });
 
     this.worker.addEventListener('message', (e) => {
-      console.log(e);
-
       if (e.data.type === 'solution') cb(e.data.result, e.data);
     });
   }
@@ -26,6 +24,10 @@ export class CubeJs {
 
   static fromString(string: string) {
     return Cube.fromString(string).asString();
+  }
+
+  static toJson(string: string): CubeState {
+    return Cube.fromString(string).toJSON();
   }
 
   static inverse(string: string) {

@@ -51,12 +51,16 @@
         event.data.maxTime || 10,
         !!event.data.useSeparator
       );
-      if (x.indexOf('Error') == -1) {
+      if (x.indexOf('Error') !== -1) {
+        x = null;
+      } else {
         x = x.substring(0, x.length - 1);
       }
+
       postMessage({
         type: 'solution',
         result: x,
+        error: x === null,
         cube: event.data.cube,
         swapMap: event.data.swapMap,
         unorderedEncoded: event.data.unorderedEncoded,
