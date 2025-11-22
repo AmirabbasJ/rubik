@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useCallback, useEffect } from 'react';
 import { keyToMoveSideMap } from '../../domain/keyToMoveSideMap';
 import { Move } from '../../domain/Moves';
-import { ChevronRightIcon } from '../../icons';
+import { ChevronRightIcon, CircleIcon } from '../../icons';
 import { Button } from '../../ui';
 import classes from './Controls.module.css';
 
@@ -59,8 +59,9 @@ export function Controls({
       </div>
 
       <div className={classes.solutionViewer}>
-        {solution
-          ? solution.split(' ').map((move, index, arr) => (
+        {solution ? (
+          <>
+            {solution.split(' ').map((move, index, arr) => (
               <div
                 className={clsx(classes.solutionMove, {
                   [classes.active]: solutionIndex === index,
@@ -73,14 +74,15 @@ export function Controls({
                   }}
                   disabled={isMoving}
                 >
-                  {move}
+                  {move === '-' ? <CircleIcon /> : move}
                 </button>
                 {arr.length === index + 1 ? null : (
                   <ChevronRightIcon color="inherit" />
                 )}
               </div>
-            ))
-          : null}
+            ))}
+          </>
+        ) : null}
       </div>
     </div>
   );

@@ -45,6 +45,9 @@
   color: inherit;
   font-family: inherit;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .solutionMove.active button {

@@ -75,8 +75,8 @@ export function Rubik() {
     }
     doubleRequestAnimationFrame(() => {
       try {
-        setCurrentSolution(solution);
-        setCurrentSolutionStepIndex(0);
+        setCurrentSolution(`- ${solution}`);
+        setCurrentSolutionStepIndex(1);
         move(
           solution.split(' ') as MoveWithDoubles[],
           () => {
@@ -100,8 +100,8 @@ export function Rubik() {
             //TODO maybe we need to remove this since it's checked in `checkRubikStatus`
             setHasColorsChanged(unorderedEncoded !== cube);
           },
-          (index) => {
-            setCurrentSolutionStepIndex(index + 1);
+          () => {
+            setCurrentSolutionStepIndex((i) => i! + 1);
           }
         );
       } catch (e) {
@@ -308,18 +308,30 @@ export function Rubik() {
   }
 
   function gotoSolutionMove(index: number) {
-    if (!currentSolution || currentSolutionStepIndex == null) return;
-    const solutionArray = currentSolution.split(' ');
+    if (
+      !currentSolution ||
+      currentSolutionStepIndex == null ||
+      index === currentSolutionStepIndex
+    )
+      return;
+    const solutionMoves = currentSolution.split(' ');
 
     if (currentSolutionStepIndex > index) {
-      const moves = solutionArray.slice(index, currentSolutionStepIndex);
+      const moves = solutionMoves.slice(
+        index + 1,
+        currentSolutionStepIndex + 1
+      );
       const inverse = CubeJs.inverse(moves.join(' '));
       setCurrentSolutionStepIndex(currentSolutionStepIndex - 1);
       move(inverse.split(' ') as MoveWithDoubles[], undefined, () => {
         setCurrentSolutionStepIndex((i) => i! - 1);
       });
     } else {
-      const moves = solutionArray.slice(currentSolutionStepIndex, index);
+      const moves = solutionMoves.slice(
+        currentSolutionStepIndex + 1,
+        index + 1
+      );
+
       setCurrentSolutionStepIndex(currentSolutionStepIndex + 1);
       move(moves as MoveWithDoubles[], undefined, () => {
         setCurrentSolutionStepIndex((i) => i! + 1);
