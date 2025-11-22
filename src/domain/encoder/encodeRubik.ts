@@ -39,12 +39,13 @@ export const orderEncoded = (unorderedEncoded: string): string => {
     .join('');
 };
 
-// TODO write test for it
-export function encodeRubik(sides: Sides[]): {
-  encoded: string;
+export type Encoded = {
+  cube: string;
   unorderedEncoded: string;
   swapMap: Record<VisibleSide, VisibleSide>;
-} | null {
+};
+// TODO write test for it
+export function encodeRubik(sides: Sides[]): Encoded | null {
   const unorderedEncoded = encodeRubikUnordered(sides);
 
   const swapMap = unorderedEncoded
@@ -55,11 +56,11 @@ export function encodeRubik(sides: Sides[]): {
       {} as Record<VisibleSide, VisibleSide>
     );
 
-  const encoded = (unorderedEncoded.split('') as VisibleSide[])
+  const cube = (unorderedEncoded.split('') as VisibleSide[])
     .map((side) => swapMap[side])
     .join('');
 
-  const isEncodedValid = isEncodedRubikValid(encoded);
+  const isEncodedValid = isEncodedRubikValid(cube);
   if (!isEncodedValid) return null;
-  return { encoded, unorderedEncoded, swapMap };
+  return { cube: cube, unorderedEncoded, swapMap };
 }

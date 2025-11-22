@@ -1,5 +1,5 @@
 import { initialRubik } from '../data/initialRubik';
-import CubeJs from '../libs/cubejs';
+import { CubeJs } from '../libs/cubejs';
 import { indexedSides, type Sides } from './RubikPiece';
 import { shuffleEncodedCenter } from './encoder/shuffleEncodedCenter';
 

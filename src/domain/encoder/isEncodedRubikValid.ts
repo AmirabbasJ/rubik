@@ -1,4 +1,4 @@
-import CubeJs from '../../libs/cubejs';
+import Cube from '../../libs/cubejs/internal';
 import { orderedSides } from '../RubikPiece';
 
 function parity(arr: number[]) {
@@ -18,7 +18,7 @@ export const isEncodedRubikValid = (encoded: string) => {
   );
   if (hasDuplicatedSide) return false;
 
-  const cube = CubeJs.fromString(encoded);
+  const cube = Cube.fromString(encoded);
   if (cube.asString() !== encoded) return false;
 
   const jsonEncoded = cube.toJSON();

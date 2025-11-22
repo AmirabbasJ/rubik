@@ -8,7 +8,7 @@ export interface CubeState {
 export type Move = string | number | number[];
 
 export class Cube {
-  constructor();
+  constructor(string?: string);
   constructor(cube: Cube);
   constructor(state: CubeState);
 
