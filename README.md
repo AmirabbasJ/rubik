@@ -139,6 +139,7 @@ npm run build
 
 # **Future Improvements**
 
-- Theme customization
-- Mobile gesture support
-- Alternative solving algorithms
+- [x] Alternative solving algorithms to lower required steps
+- [x] Mobile support
+- [ ] Theme customization
+- [ ] add drag and drop movement
