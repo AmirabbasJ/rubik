@@ -64,10 +64,7 @@ export function Rubik() {
 
   useResponsiveCamera();
 
-  function onSolve(
-    solution: string | null,
-    { swapMap, unorderedEncoded, cube }: Encoded
-  ) {
+  function onSolve(solution: string | null, { swapMap }: Encoded) {
     if (solution === null) {
       setIsMoving(false);
       setIsInvalid(true);
@@ -80,25 +77,9 @@ export function Rubik() {
         move(
           solution.split(' ') as MoveWithDoubles[],
           () => {
-            moveListRef.current = [];
-            const sideSwapInverseMap = inverseObject(swapMap);
-
-            initialRubik
-              .map((s) => s.sides)
-              .forEach((sides, i) => {
-                const newSides = sides.map((name) => {
-                  if (name === '-') return '-';
-                  const newSide = sideSwapInverseMap![name[0] as VisibleSide];
-                  const newIndex = name[1];
-                  const newName = `${newSide}${newIndex}`;
-                  return newName;
-                }) as Sides;
-                currentRotatedSolvedRubikRef.current[i].sides = newSides;
-              });
-
-            setResetKey((count) => count + 1);
-            //TODO maybe we need to remove this since it's checked in `checkRubikStatus`
-            setHasColorsChanged(unorderedEncoded !== cube);
+            const sideSwapInverseMap = inverseObject(swapMap!);
+            reset(sideSwapInverseMap);
+            setIsSolved(true);
           },
           () => {
             setCurrentSolutionStepIndex((i) => i! + 1);
@@ -210,6 +191,7 @@ export function Rubik() {
     const movedCube = CubeJs.move(cube, moveListRef.current);
 
     setIsSolved(movedCube === solvedEncodedRubik);
+
     setIsInvalid(false);
     setHasColorsChanged(solvedEncodedRubik !== unorderedEncodedRubik);
   }, []);
@@ -263,20 +245,33 @@ export function Rubik() {
     rotate(rotations, onComplete, onEach);
   };
 
-  const clientMove = (moves: MoveWithDoubles[]) => {
-    if (isMoving || isAnimating()) return;
-
-    removeSolutionSteps();
-    //NOTE the moves lead to resetting solving the rubik
+  const addToMoveList = (moves: MoveWithDoubles[]) => {
     const newList = moveListRef.current.concat(moves);
     const currentCube = solvedEncodedRubik;
     const movedCube = CubeJs.move(currentCube, newList);
     if (movedCube === solvedEncodedRubik) moveListRef.current = [];
     else moveListRef.current = newList;
+  };
 
-    move(moves, () => {
-      checkRubikStatus();
-    });
+  const clientMove = (
+    moves: MoveWithDoubles[],
+    onComplete?: VoidFunction,
+    onEach?: (index: number) => void
+  ) => {
+    if (isMoving || isAnimating()) return;
+
+    removeSolutionSteps();
+    //NOTE some moves lead to resetting solving the rubik
+    addToMoveList(moves);
+
+    move(
+      moves,
+      () => {
+        checkRubikStatus();
+        onComplete?.();
+      },
+      onEach
+    );
   };
 
   function solve() {
@@ -321,41 +316,59 @@ export function Rubik() {
         index + 1,
         currentSolutionStepIndex + 1
       );
-      const inverse = CubeJs.inverse(moves.join(' '));
+      const inverse = CubeJs.inverse(moves.join(' ')).split(
+        ' '
+      ) as MoveWithDoubles[];
+      addToMoveList(inverse);
       setCurrentSolutionStepIndex(currentSolutionStepIndex - 1);
-      move(inverse.split(' ') as MoveWithDoubles[], undefined, () => {
-        setCurrentSolutionStepIndex((i) => i! - 1);
-      });
+      move(
+        inverse,
+        () => {
+          checkRubikStatus();
+        },
+        () => {
+          setCurrentSolutionStepIndex((i) => i! - 1);
+        }
+      );
     } else {
       const moves = solutionMoves.slice(
         currentSolutionStepIndex + 1,
         index + 1
-      );
+      ) as MoveWithDoubles[];
 
+      addToMoveList(moves);
       setCurrentSolutionStepIndex(currentSolutionStepIndex + 1);
-      move(moves as MoveWithDoubles[], undefined, () => {
-        setCurrentSolutionStepIndex((i) => i! + 1);
-      });
+      move(
+        moves,
+        () => {
+          checkRubikStatus();
+        },
+        () => {
+          setCurrentSolutionStepIndex((i) => i! + 1);
+        }
+      );
     }
   }
 
-  function reset() {
-    removeSolutionSteps();
-    const sideToColorMap = sideToColorMapRef.current;
-    const meshes = getPieceMeshes();
+  function reset(swapMap?: Record<VisibleSide, VisibleSide>) {
+    if (!swapMap) removeSolutionSteps();
 
-    initialRubik.map(({ sides }, index) => {
-      meshes[index].forEach((m, i) => {
-        const name = sides[i];
-        const side = name[0] as Side;
-        m.material.name = name === '-' ? '' : name;
-        m.material.color.setStyle(sideToColorMap[side]);
+    initialRubik
+      .map((s) => s.sides)
+      .forEach((sides, i) => {
+        const newSides = sides.map((name) => {
+          if (name === '-') return '-';
+          const newSide = swapMap ? swapMap[name[0] as VisibleSide] : name[0];
+          const newIndex = name[1];
+          const newName = `${newSide}${newIndex}`;
+          return newName;
+        }) as Sides;
+        currentRotatedSolvedRubikRef.current[i].sides = newSides;
       });
-    });
 
-    //TODO maybe we need to remove this since it's checked in `checkRubikStatus`
-    setIsInvalid(false);
-    setHasColorsChanged(false);
+    setIsSolved(true);
+    setResetKey((count) => count + 1);
+    moveListRef.current = [];
   }
 
   return (
