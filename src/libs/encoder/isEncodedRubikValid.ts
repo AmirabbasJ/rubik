@@ -1,5 +1,5 @@
-import { RubikSolver } from '../../libs/RubikSolver';
-import { orderedSides } from '../RubikPiece';
+import { orderedSides } from '@/domain';
+import { RubikSolver } from '@/libs/RubikSolver';
 
 function parity(arr: number[]) {
   let inv = 0;

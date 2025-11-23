@@ -1,34 +1,32 @@
+import { ColoringContext, useColoring } from '@/context';
+import { initialRubik } from '@/data';
+import type { MoveWithDoubles, Rubik } from '@/domain';
+import {
+  getShuffledRubik,
+  InvalidRubikError,
+  type Side,
+  type Sides,
+  type VisibleSide,
+} from '@/domain';
+import { useResponsiveCamera, useRubikAudio } from '@/hooks';
+import { encodeRubik, type Encoded } from '@/libs/encoder';
+import { RubikSolver } from '@/libs/RubikSolver';
+import { PresentationControlsNoInverse } from '@/libs/threejs-addons';
+import {
+  deepCopy,
+  doubleRequestAnimationFrame,
+  inverseObject,
+  isAnimating,
+} from '@/utils';
 import { Html, useContextBridge } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import clsx from 'clsx';
 import jeasings from 'jeasings';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { type Group } from 'three';
-import { ColoringContext, useColoring } from '../../Context/ColorContext';
-import { initialRubik } from '../../data/initialRubik';
-import { encodeRubik, type Encoded } from '../../domain/encoder/encodeRubik';
-import { getShuffledRubik } from '../../domain/getShuffledRubik';
-import { InvalidRubikError } from '../../domain/InvalidRubik';
-import type { MoveWithDoubles } from '../../domain/Moves';
-import type { Rubik } from '../../domain/Rubik';
-import {
-  type Side,
-  type Sides,
-  type VisibleSide,
-} from '../../domain/RubikPiece';
-import { useResponsiveCamera } from '../../hooks/useReponsiveCamera';
-import { useRubikAudio } from '../../hooks/useRubikAudio';
-import { RubikSolver } from '../../libs/RubikSolver';
-import { PresentationControlsNoInverse } from '../../libs/threejs-addons';
-import {
-  deepCopy,
-  doubleRequestAnimationFrame,
-  inverseObject,
-  isAnimating,
-} from '../../utils';
-import { Controls } from '../Controls/Controls';
-import { InfoModal } from '../InfoModal/InfoModal';
-import { Navbar } from '../Navbar/Navbar';
+import { Controls } from '../Controls';
+import { InfoModal } from '../InfoModal';
+import { Navbar } from '../Navbar';
 import { moveToRotation, type Rotation } from './moveToRotation';
 import classes from './Rubik.module.css';
 import { RubikPiece, type PieceMesh } from './RubikPiece';
@@ -399,7 +397,6 @@ export function Rubik() {
             isRubikInvalid={isInvalid}
             reset={reset}
             hasColorsChanged={hasColorsChanged}
-            getPieceMeshes={getPieceMeshes}
             isSolved={isSolved}
             isSolving={isSolving}
             solve={solve}

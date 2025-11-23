@@ -1,11 +1,11 @@
-import { initialRubik } from '../../data/initialRubik';
+import { initialRubik } from '@/data';
 
 import {
   indexedSides,
   orderedSides,
   type Sides,
   type VisibleSide,
-} from '../RubikPiece';
+} from '@/domain';
 import { isEncodedRubikValid } from './isEncodedRubikValid';
 
 const sidesIndexMap = indexedSides.map((s) =>

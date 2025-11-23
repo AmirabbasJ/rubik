@@ -1,5 +1,4 @@
-import type { Axis } from '../../domain/Axis';
-import type { MoveWithDoubles } from '../../domain/Moves';
+import type { Axis, MoveWithDoubles } from '@/domain';
 
 export interface Rotation {
   axis: Axis;

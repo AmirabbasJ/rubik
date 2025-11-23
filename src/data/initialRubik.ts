@@ -1,4 +1,4 @@
-import type { Rubik } from '../domain/Rubik';
+import type { Rubik } from '@/domain';
 
 export const initialRubik: Rubik = [
   { position: { x: 0, y: 0, z: 0 }, sides: ['-', '-', '-', '-', '-', '-'] },

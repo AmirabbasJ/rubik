@@ -1,8 +1,8 @@
+import { keyToMoveSideMap } from '@/domain';
+import { CloseIcon, CubeIcon, GitHubIcon, HeartIcon } from '@/icons';
+import { Button } from '@/ui';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
-import { keyToMoveSideMap } from '../../domain/keyToMoveSideMap';
-import { CloseIcon, CubeIcon, GitHubIcon, HeartIcon } from '../../icons';
-import { Button } from '../../ui';
 import classes from './InfoModal.module.css';
 
 interface InfoModalProps {

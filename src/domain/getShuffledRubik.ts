@@ -1,7 +1,7 @@
-import { initialRubik } from '../data/initialRubik';
-import { RubikSolver } from '../libs/RubikSolver';
+import { initialRubik } from '@/data';
+import { shuffleEncodedCenter } from '@/libs/encoder';
+import { RubikSolver } from '@/libs/RubikSolver';
 import { indexedSides, type Sides } from './RubikPiece';
-import { shuffleEncodedCenter } from './encoder/shuffleEncodedCenter';
 
 export function getShuffledRubik() {
   const randomCube = RubikSolver.random();

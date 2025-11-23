@@ -1,14 +1,11 @@
+import { useColoring } from '@/context';
+import { type RubikPiece as RubikPieceType, type Side } from '@/domain';
+import { RectangleRounded } from '@/libs/threejs-addons';
+import { isAnimating } from '@/utils';
 import { memo } from 'react';
 import type { Group, MeshBasicMaterial } from 'three';
 import { type Mesh } from 'three';
-import { RoundedBoxGeometry } from 'three/examples/jsm/Addons.js';
-import { useColoring } from '../../Context/ColorContext';
-import {
-  type RubikPiece as RubikPieceType,
-  type Side,
-} from '../../domain/RubikPiece';
-import { RectangleRounded } from '../../libs/threejs-addons';
-import { isAnimating } from '../../utils';
+import { RoundedBoxGeometry } from 'three/addons';
 
 export type PieceMesh = Mesh<RoundedBoxGeometry, MeshBasicMaterial>;
 export type PiecesGroup = Group & {

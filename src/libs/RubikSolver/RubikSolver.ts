@@ -1,5 +1,5 @@
+import type { Encoded } from '@/libs/encoder';
 import Cube, { type CubeState } from 'cubejs';
-import type { Encoded } from '../../domain/encoder/encodeRubik';
 
 export class RubikSolver {
   static solvedEncoded: string = new Cube().asString();

@@ -15,7 +15,7 @@ interface CanvasWithCleanup extends HTMLCanvasElement {
   cleanupFuzzyText?: () => void;
 }
 
-const FuzzyText = ({
+export const FuzzyText = ({
   children,
   fontSize = 'clamp(2rem, 10vw, 10rem)',
   fontWeight = 900,
@@ -233,5 +233,3 @@ const FuzzyText = ({
 
   return <canvas ref={canvasRef} />;
 };
-
-export default FuzzyText;

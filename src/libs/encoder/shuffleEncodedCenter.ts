@@ -1,5 +1,5 @@
+import { orderedSides, type VisibleSide } from '@/domain';
 import shuffle from 'lodash.shuffle';
-import { orderedSides, type VisibleSide } from '../RubikPiece';
 
 export function shuffleEncodedCenter(encoded: string) {
   const unorderedEncoded = shuffle(orderedSides).join('');

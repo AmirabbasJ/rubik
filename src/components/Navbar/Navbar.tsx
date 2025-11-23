@@ -1,17 +1,14 @@
+import { InfoIcon, ResetIcon, VolumeIcon, VolumeOffIcon } from '@/icons';
+import { Button, FuzzyText } from '@/ui';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { InfoIcon, ResetIcon, VolumeIcon, VolumeOffIcon } from '../../icons';
-import { Button } from '../../ui';
-import FuzzyText from '../../ui/FuzzyText/FuzzyText';
-import { Palette } from '../Palette/Palette';
-import type { PieceMesh } from '../Rubik/RubikPiece';
+import { Palette } from '../Palette';
 import classes from './Navbar.module.css';
 
 interface Props {
-  solve: () => void;
+  solve: VoidFunction;
   isSolving: boolean;
   isSolved: boolean;
-  getPieceMeshes: () => PieceMesh[][];
   hasColorsChanged: boolean;
   reset: VoidFunction;
   isRubikInvalid: boolean;

@@ -1,9 +1,8 @@
+import { keyToMoveSideMap, Move } from '@/domain';
+import { ChevronRightIcon, CircleIcon } from '@/icons';
+import { Button } from '@/ui';
 import clsx from 'clsx';
 import { useCallback, useEffect } from 'react';
-import { keyToMoveSideMap } from '../../domain/keyToMoveSideMap';
-import { Move } from '../../domain/Moves';
-import { ChevronRightIcon, CircleIcon } from '../../icons';
-import { Button } from '../../ui';
 import classes from './Controls.module.css';
 
 interface Props {

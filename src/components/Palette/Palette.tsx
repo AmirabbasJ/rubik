@@ -1,10 +1,10 @@
+import { useColoring } from '@/context';
+import type { Side } from '@/domain';
+import { ChevronDownIcon, PaletteIcon } from '@/icons';
+import { Button } from '@/ui';
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { canvasId } from '../../canvasId';
-import { useColoring } from '../../Context/ColorContext';
-import type { Side } from '../../domain/RubikPiece';
-import { ChevronDownIcon, PaletteIcon } from '../../icons';
-import { Button } from '../../ui';
 import { genBrushUrl } from './brushUrl';
 import classes from './Palette.module.css';
 
