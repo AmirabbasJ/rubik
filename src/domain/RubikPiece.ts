@@ -1,17 +1,5 @@
-export type Side = 'L' | 'B' | 'U' | 'R' | 'D' | 'F' | '-';
-export const orderedSides = ['U', 'R', 'F', 'D', 'L', 'B'] as const;
-
-export const indexedSides = orderedSides.flatMap((c) =>
-  Array(9)
-    .fill(c)
-    .map((c, i) => `${c}${i}` as IndexedSide)
-);
-
-interface Position {
-  x: number;
-  y: number;
-  z: number;
-}
+import type { Position } from './Position';
+import type { Side } from './Side';
 
 export const getSideIndex = (side: Side, p: Position) => {
   if (side === '-') return null;

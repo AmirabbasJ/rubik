@@ -2,7 +2,6 @@ import { ColoringContext } from '@/context';
 import { initialRubik } from '@/data';
 import type { MoveWithDoubles, Rubik } from '@/domain';
 import {
-  getShuffledRubik,
   InvalidRubikError,
   type Side,
   type Sides,
@@ -121,7 +120,7 @@ export function Rubik() {
   function shuffle() {
     removeSolutionSteps();
 
-    const shuffledSides = getShuffledRubik();
+    const shuffledSides = RubikSolver.shuffle();
     const sideToColorMap = sideToColorMapRef.current;
 
     getPieceMeshes().forEach((c, index) =>

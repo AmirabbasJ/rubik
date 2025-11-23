@@ -1,4 +1,6 @@
-import type { Encoded } from '@/libs/encoder';
+import { initialRubik } from '@/data';
+import { indexedSides, type Sides } from '@/domain';
+import { shuffleEncodedCenter, type Encoded } from '@/libs/encoder';
 import Cube, { type CubeState } from 'cubejs';
 
 export class RubikSolver {
@@ -16,8 +18,22 @@ export class RubikSolver {
     });
   }
 
-  static random() {
-    return Cube.random();
+  static shuffle() {
+    const randomCube = Cube.random();
+    const encodedShuffle = shuffleEncodedCenter(randomCube.asString());
+
+    const nameShuffleMap = indexedSides
+      .map((v, i) => ({ [v]: `${encodedShuffle[i]}${v[1]}` }))
+      .reduce((acc, curr) => ({ ...acc, ...curr }), {});
+
+    const shuffledSides = initialRubik.map(({ sides: c }) =>
+      c.map((m) => {
+        if (m === '-') return '-';
+        else return nameShuffleMap[m];
+      })
+    ) as Sides[];
+
+    return shuffledSides;
   }
 
   static fromString(string: string) {
