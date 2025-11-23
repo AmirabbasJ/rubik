@@ -1,5 +1,4 @@
 .button {
-  background-color: transparent;
   border: 1px solid #c4c4c4;
   color: white;
   display: flex;
@@ -12,7 +11,6 @@
   font-weight: 600;
   opacity: 0.6;
   border-radius: 2px;
-  cursor: pointer;
   transition: all 0.2s ease;
   font-family: inherit;
   font-weight: 900;
@@ -37,7 +35,6 @@
   opacity: 0.4;
   background-color: #ffffff3f;
   color: #969696;
-  cursor: not-allowed;
 }
 
 .circle {

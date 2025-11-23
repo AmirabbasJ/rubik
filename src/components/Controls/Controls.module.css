@@ -20,6 +20,7 @@
 }
 
 .solutionViewer {
+  cursor: auto;
   padding: 0 20px;
   display: flex;
   justify-content: center;
@@ -38,14 +39,7 @@
   font-family: inherit;
 }
 
-.solutionMove,
-.solutionMove button {
-  appearance: none;
-  background-color: transparent;
-  border: none;
-  outline: none;
-}
-.solutionMove button {
+.solutionMoveKey {
   flex-grow: 1;
   color: #ffffff27;
   padding: 0 5px;
@@ -57,13 +51,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
 }
-.solutionMove button:hover,
-.solutionMove:hover button {
+
+.solutionMove:not(:disabled):hover .solutionMoveKey {
   color: rgba(220, 220, 220, 0.469);
 }
 
-.solutionMove.active button {
+.solutionMove.active .solutionMoveKey {
   color: #ffffffa9;
 }

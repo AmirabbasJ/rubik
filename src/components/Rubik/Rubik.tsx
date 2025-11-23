@@ -41,6 +41,7 @@ const solvedEncodedRubik = CubeJs.solvedEncoded;
 export function Rubik() {
   const ContextProviders = useContextBridge(ColoringContext);
   const { sideToColorMapRef } = useColoring();
+  const [isSolving, setIsSolving] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
   const [hasColorsChanged, setHasColorsChanged] = useState(false);
   const moveListRef = useRef<MoveWithDoubles[]>([]);
@@ -67,6 +68,7 @@ export function Rubik() {
   function onSolve(solution: string | null, { swapMap }: Encoded) {
     if (solution === null) {
       setIsMoving(false);
+      setIsSolving(false);
       setIsInvalid(true);
       return;
     }
@@ -89,6 +91,7 @@ export function Rubik() {
         const error = e as Error;
         if (error.name === InvalidRubikError.name) {
           setIsMoving(false);
+          setIsSolving(false);
           setIsInvalid(true);
         }
       }
@@ -98,6 +101,7 @@ export function Rubik() {
   useEffect(() => {
     CubeJs.initSolver(onSolve);
     return () => CubeJs.worker.terminate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const removeSolutionSteps = useCallback(() => {
@@ -194,6 +198,7 @@ export function Rubik() {
 
     setIsInvalid(false);
     setHasColorsChanged(solvedEncodedRubik !== unorderedEncodedRubik);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function rotate(
@@ -224,6 +229,7 @@ export function Rubik() {
         } else {
           animation.onComplete(() => {
             setIsMoving(false);
+            setIsSolving(false);
             setIsSolved(true);
             resetCubeGroup();
             if (onComplete) onComplete();
@@ -241,19 +247,16 @@ export function Rubik() {
     onEach?: (index: number) => void
   ) => {
     if (isMoving || isAnimating()) return;
+    setIsMoving(true);
     const rotations = moves.map((moveName) => moveToRotation(moveName));
     rotate(rotations, onComplete, onEach);
   };
 
   const addToMoveList = (moves: MoveWithDoubles[]) => {
-    console.log(moveListRef.current, { moves });
-
     const newList = moveListRef.current.concat(moves);
     const currentCube = solvedEncodedRubik;
     const movedCube = CubeJs.move(currentCube, newList);
     if (movedCube === solvedEncodedRubik) {
-      console.log('reset in add to moveList');
-
       moveListRef.current = [];
     } else moveListRef.current = newList;
   };
@@ -263,7 +266,7 @@ export function Rubik() {
     onComplete?: VoidFunction,
     onEach?: (index: number) => void
   ) => {
-    if (isMoving || isAnimating()) return;
+    if (isSolving || isAnimating()) return;
 
     removeSolutionSteps();
     //NOTE some moves lead to resetting solving the rubik
@@ -280,7 +283,7 @@ export function Rubik() {
   };
 
   function solve() {
-    if (isMoving || isSolved) return;
+    if (isSolving || isSolved) return;
 
     const sides = getSides();
 
@@ -294,12 +297,12 @@ export function Rubik() {
       setIsInvalid(true);
       return;
     }
-    console.log('moveList in solve ', moveListRef.current);
 
     setIsInvalid(false);
     const cube = CubeJs.fromString(encodedRubik);
     const movedCube = CubeJs.move(cube, moveListRef.current);
     setIsMoving(true);
+    setIsSolving(true);
 
     CubeJs.solve({
       swapMap: swapMap!,
@@ -381,7 +384,6 @@ export function Rubik() {
     setIsSolved(true);
     setResetKey((count) => count + 1);
 
-    console.log('reset in reset');
     moveListRef.current = [];
   }
 
@@ -399,10 +401,11 @@ export function Rubik() {
             hasColorsChanged={hasColorsChanged}
             getPieceMeshes={getPieceMeshes}
             isSolved={isSolved}
-            isSolving={isMoving}
+            isSolving={isSolving}
             solve={solve}
           />
           <Controls
+            isSolving={isSolving}
             gotoSolutionMove={gotoSolutionMove}
             solutionIndex={currentSolutionStepIndex}
             solution={currentSolution}

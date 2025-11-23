@@ -9,6 +9,7 @@ import classes from './Controls.module.css';
 interface Props {
   move: (m: Move[]) => void;
   isMoving: boolean;
+  isSolving: boolean;
   solution?: string | null;
   solutionIndex: number | null;
   gotoSolutionMove: (index: number) => void;
@@ -17,6 +18,7 @@ interface Props {
 export function Controls({
   move,
   isMoving,
+  isSolving,
   solution,
   solutionIndex,
   gotoSolutionMove,
@@ -47,7 +49,7 @@ export function Controls({
         {Object.values(Move).map((moveName) => (
           <Button
             square
-            disabled={isMoving}
+            disabled={isSolving}
             key={moveName}
             onClick={() => {
               move([moveName]);
@@ -64,23 +66,18 @@ export function Controls({
             {solution.split(' ').map((move, index) => (
               <button
                 onClick={() => {
-                  if (!isMoving) gotoSolutionMove(index);
+                  if (!isMoving && !isSolving) gotoSolutionMove(index);
                 }}
                 className={clsx(classes.solutionMove, {
                   [classes.active]: solutionIndex === index,
                 })}
-                disabled={isMoving}
+                disabled={isMoving || isSolving}
                 key={index}
               >
                 {index === 0 ? null : <ChevronRightIcon color="inherit" />}
-                <button
-                  onClick={() => {
-                    if (!isMoving) gotoSolutionMove(index);
-                  }}
-                  disabled={isMoving}
-                >
+                <div className={classes.solutionMoveKey}>
                   {move === '-' ? <CircleIcon /> : move}
-                </button>
+                </div>
               </button>
             ))}
           </>

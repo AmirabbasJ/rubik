@@ -23,3 +23,16 @@ html {
 body {
   font-family: rubik;
 }
+
+button {
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+button:disabled,
+button:disabled:hover {
+  cursor: not-allowed;
+}
