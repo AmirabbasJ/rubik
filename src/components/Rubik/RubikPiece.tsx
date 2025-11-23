@@ -1,5 +1,5 @@
-import { useColoring } from '@/context';
 import { type RubikPiece as RubikPieceType, type Side } from '@/domain';
+import { useColoring } from '@/hooks';
 import { RectangleRounded } from '@/libs/threejs-addons';
 import { isAnimating } from '@/utils';
 import { memo } from 'react';

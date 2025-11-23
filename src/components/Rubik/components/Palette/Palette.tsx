@@ -1,5 +1,5 @@
-import { useColoring } from '@/context';
 import type { Side } from '@/domain';
+import { useColoring } from '@/hooks';
 import { ChevronDownIcon, PaletteIcon } from '@/icons';
 import { Button } from '@/ui';
 import clsx from 'clsx';
@@ -8,11 +8,11 @@ import { canvasId } from '../../../../canvasId';
 import { genBrushUrl } from './brushUrl';
 import classes from './Palette.module.css';
 
-interface NewType {
+interface Palette {
   isDisabled?: boolean;
 }
 
-export const Palette = ({ isDisabled = false }: NewType) => {
+export const Palette = ({ isDisabled = false }: Palette) => {
   const { selectedSideRef, sideToColorMapRef } = useColoring();
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Side | null>(

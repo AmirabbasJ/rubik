@@ -1,4 +1,4 @@
-import { ColoringContext, useColoring } from '@/context';
+import { ColoringContext } from '@/context';
 import { initialRubik } from '@/data';
 import type { MoveWithDoubles, Rubik } from '@/domain';
 import {
@@ -8,7 +8,7 @@ import {
   type Sides,
   type VisibleSide,
 } from '@/domain';
-import { useResponsiveCamera, useRubikAudio } from '@/hooks';
+import { useColoring, useResponsiveCamera, useRubikAudio } from '@/hooks';
 import { encodeRubik, type Encoded } from '@/libs/encoder';
 import { RubikSolver } from '@/libs/RubikSolver';
 import { PresentationControlsNoInverse } from '@/libs/threejs-addons';

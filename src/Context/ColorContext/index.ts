@@ -1,3 +1,2 @@
-export * from './ColorContext';
-export * from './ColorContextProvider';
-export * from './useColor';
+export * from './ColoringContext';
+export * from './ColoringContextProvider';

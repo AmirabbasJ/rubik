@@ -1,13 +1,12 @@
 import type { Side } from '@/domain';
-import React, { useMemo, useRef, type RefObject } from 'react';
-import { ColoringContext } from './ColorContext';
+import React, { useMemo, useRef } from 'react';
+import { ColoringContext } from './ColoringContext';
 
-export type ColoringContextType = {
-  selectedSideRef: RefObject<Side | null>;
-  sideToColorMapRef: RefObject<Record<Side, string>>;
-};
-
-export function ColoringProvider({ children }: { children: React.ReactNode }) {
+export function ColoringContextProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const selectedSideRef = useRef<Side | null>(null);
 
   // TODO allow setting
