@@ -122,13 +122,15 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .featureList li {
-  padding: 0.5rem 0;
   font-size: 16px;
   position: relative;
-  color: #c0c0c0;
+  color: #d1d5db;
 }
 
 .controlsList {

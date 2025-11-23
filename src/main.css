@@ -1,6 +1,13 @@
 @font-face {
   font-family: rubik;
-  src: url('/font/Rubik.ttf') format('truetype');
+  font-weight: 900;
+  src: url('/font/Rubik-Black.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: rubik;
+  font-weight: 700;
+  src: url('/font/Rubik-Bold.ttf') format('truetype');
 }
 
 html {
