@@ -4,11 +4,15 @@ import { ChevronDownIcon, PaletteIcon } from '@/icons';
 import { Button } from '@/ui';
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
-import { canvasId } from '../../canvasId';
+import { canvasId } from '../../../../canvasId';
 import { genBrushUrl } from './brushUrl';
 import classes from './Palette.module.css';
 
-export const Palette = ({ isDisabled = false }: { isDisabled?: boolean }) => {
+interface NewType {
+  isDisabled?: boolean;
+}
+
+export const Palette = ({ isDisabled = false }: NewType) => {
   const { selectedSideRef, sideToColorMapRef } = useColoring();
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Side | null>(
