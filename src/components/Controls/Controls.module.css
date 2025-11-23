@@ -25,6 +25,7 @@
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  row-gap: 5px;
 }
 
 .solutionMove {
@@ -33,6 +34,7 @@
   color: #ffffff27;
   font-size: 15px;
   cursor: pointer;
+  font-weight: 900;
 }
 
 .solutionMove button {
@@ -46,6 +48,7 @@
   outline: none;
   color: inherit;
   font-family: inherit;
+  font-weight: inherit;
   display: flex;
   align-items: center;
   justify-content: center;
