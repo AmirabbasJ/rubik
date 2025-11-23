@@ -2,6 +2,7 @@ import { useThree } from '@react-three/fiber';
 import { useEffect } from 'react';
 import type { PerspectiveCamera } from 'three';
 
+//NOTE needs to be called inside the Canvas
 export function useResponsiveCamera() {
   const camera = useThree((state) => state.camera as PerspectiveCamera);
   const size = useThree((state) => state.size);
