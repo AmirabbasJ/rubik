@@ -62,13 +62,14 @@ export function Controls({
         {solution ? (
           <>
             {solution.split(' ').map((move, index) => (
-              <div
+              <button
                 onClick={() => {
                   if (!isMoving) gotoSolutionMove(index);
                 }}
                 className={clsx(classes.solutionMove, {
                   [classes.active]: solutionIndex === index,
                 })}
+                disabled={isMoving}
                 key={index}
               >
                 {index === 0 ? null : <ChevronRightIcon color="inherit" />}
@@ -80,7 +81,7 @@ export function Controls({
                 >
                   {move === '-' ? <CircleIcon /> : move}
                 </button>
-              </div>
+              </button>
             ))}
           </>
         ) : null}

@@ -35,17 +35,22 @@
   font-size: 15px;
   cursor: pointer;
   font-weight: 900;
+  font-family: inherit;
 }
 
+.solutionMove,
+.solutionMove button {
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
 .solutionMove button {
   flex-grow: 1;
   color: #ffffff27;
   padding: 0 5px;
   transition: color 0.3s ease;
-  appearance: none;
   background-color: transparent;
-  border: none;
-  outline: none;
   color: inherit;
   font-family: inherit;
   font-weight: inherit;

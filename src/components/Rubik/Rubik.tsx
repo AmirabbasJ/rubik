@@ -246,11 +246,16 @@ export function Rubik() {
   };
 
   const addToMoveList = (moves: MoveWithDoubles[]) => {
+    console.log(moveListRef.current, { moves });
+
     const newList = moveListRef.current.concat(moves);
     const currentCube = solvedEncodedRubik;
     const movedCube = CubeJs.move(currentCube, newList);
-    if (movedCube === solvedEncodedRubik) moveListRef.current = [];
-    else moveListRef.current = newList;
+    if (movedCube === solvedEncodedRubik) {
+      console.log('reset in add to moveList');
+
+      moveListRef.current = [];
+    } else moveListRef.current = newList;
   };
 
   const clientMove = (
@@ -289,6 +294,7 @@ export function Rubik() {
       setIsInvalid(true);
       return;
     }
+    console.log('moveList in solve ', moveListRef.current);
 
     setIsInvalid(false);
     const cube = CubeJs.fromString(encodedRubik);
@@ -319,7 +325,6 @@ export function Rubik() {
       const inverse = CubeJs.inverse(moves.join(' ')).split(
         ' '
       ) as MoveWithDoubles[];
-      addToMoveList(inverse);
       setCurrentSolutionStepIndex(currentSolutionStepIndex - 1);
       move(
         inverse,
@@ -336,7 +341,6 @@ export function Rubik() {
         index + 1
       ) as MoveWithDoubles[];
 
-      addToMoveList(moves);
       setCurrentSolutionStepIndex(currentSolutionStepIndex + 1);
       move(
         moves,
@@ -348,6 +352,14 @@ export function Rubik() {
         }
       );
     }
+
+    const toSolution = solutionMoves.slice(index + 1).join(' ');
+
+    const inverted =
+      toSolution === ''
+        ? []
+        : CubeJs.inverse(toSolution.split(' ').join(' ')).split(' ');
+    moveListRef.current = inverted as MoveWithDoubles[];
   }
 
   function reset(swapMap?: Record<VisibleSide, VisibleSide>) {
@@ -368,6 +380,8 @@ export function Rubik() {
 
     setIsSolved(true);
     setResetKey((count) => count + 1);
+
+    console.log('reset in reset');
     moveListRef.current = [];
   }
 
