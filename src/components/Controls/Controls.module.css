@@ -25,29 +25,35 @@
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  gap: 5px;
 }
 
 .solutionMove {
   display: flex;
-  gap: 5px;
   align-items: center;
   color: #ffffff27;
   font-size: 15px;
-  transition: color 0.3s ease;
+  cursor: pointer;
 }
 
 .solutionMove button {
+  flex-grow: 1;
+  color: #ffffff27;
+  padding: 0 5px;
+  transition: color 0.3s ease;
   appearance: none;
   background-color: transparent;
   border: none;
   outline: none;
   color: inherit;
   font-family: inherit;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+}
+.solutionMove button:hover,
+.solutionMove:hover button {
+  color: rgba(220, 220, 220, 0.469);
 }
 
 .solutionMove.active button {

@@ -61,13 +61,17 @@ export function Controls({
       <div className={classes.solutionViewer}>
         {solution ? (
           <>
-            {solution.split(' ').map((move, index, arr) => (
+            {solution.split(' ').map((move, index) => (
               <div
+                onClick={() => {
+                  if (!isMoving) gotoSolutionMove(index);
+                }}
                 className={clsx(classes.solutionMove, {
                   [classes.active]: solutionIndex === index,
                 })}
                 key={index}
               >
+                {index === 0 ? null : <ChevronRightIcon color="inherit" />}
                 <button
                   onClick={() => {
                     if (!isMoving) gotoSolutionMove(index);
@@ -76,9 +80,6 @@ export function Controls({
                 >
                   {move === '-' ? <CircleIcon /> : move}
                 </button>
-                {arr.length === index + 1 ? null : (
-                  <ChevronRightIcon color="inherit" />
-                )}
               </div>
             ))}
           </>
