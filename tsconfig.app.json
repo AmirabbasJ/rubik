@@ -5,7 +5,7 @@
     "useDefineForClassFields": true,
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "types": ["vite/client"],
+    "types": ["vite/client", "./@types/"],
     "skipLibCheck": true,
     "allowJs": true,
 
@@ -24,6 +24,7 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+
     "paths": {
       "three/webgpu": ["./node_modules/three/build/three.webgpu.js"],
       "three/tsl": ["./node_modules/three/build/three.tsl.js"],

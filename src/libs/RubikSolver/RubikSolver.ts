@@ -1,16 +1,14 @@
+import Cube, { type CubeState } from 'cubejs';
 import type { Encoded } from '../../domain/encoder/encodeRubik';
-import Cube, { type CubeState } from './internal/cube.js';
 
-export class CubeJs {
+export class RubikSolver {
   static solvedEncoded: string = new Cube().asString();
   static worker: Worker;
 
   static initSolver(cb: (solution: string | null, encoded: Encoded) => void) {
     if (this.worker) this.worker.terminate();
 
-    this.worker = new Worker(
-      new URL('./internal/solverWorker.js', import.meta.url)
-    );
+    this.worker = new Worker(new URL('./solverWorker.js', import.meta.url));
     this.worker.postMessage({ type: 'generateTables' });
 
     this.worker.addEventListener('message', (e) => {

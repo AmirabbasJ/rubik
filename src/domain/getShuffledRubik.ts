@@ -1,10 +1,10 @@
 import { initialRubik } from '../data/initialRubik';
-import { CubeJs } from '../libs/cubejs';
+import { RubikSolver } from '../libs/RubikSolver';
 import { indexedSides, type Sides } from './RubikPiece';
 import { shuffleEncodedCenter } from './encoder/shuffleEncodedCenter';
 
 export function getShuffledRubik() {
-  const randomCube = CubeJs.random();
+  const randomCube = RubikSolver.random();
   const encodedShuffle = shuffleEncodedCenter(randomCube.asString());
 
   const nameShuffleMap = indexedSides

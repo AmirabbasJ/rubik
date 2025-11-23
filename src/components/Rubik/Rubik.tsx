@@ -18,7 +18,7 @@ import {
 } from '../../domain/RubikPiece';
 import { useResponsiveCamera } from '../../hooks/useReponsiveCamera';
 import { useRubikAudio } from '../../hooks/useRubikAudio';
-import { CubeJs } from '../../libs/cubejs';
+import { RubikSolver } from '../../libs/RubikSolver';
 import { PresentationControlsNoInverse } from '../../libs/threejs-addons';
 import {
   deepCopy,
@@ -36,7 +36,7 @@ import { RubikPiece, type PieceMesh } from './RubikPiece';
 const initialRubikCopy = deepCopy(initialRubik);
 const pieceSize = 0.75;
 const initialRotation = { y: Math.PI / 5, x: -Math.PI / 4 };
-const solvedEncodedRubik = CubeJs.solvedEncoded;
+const solvedEncodedRubik = RubikSolver.solvedEncoded;
 
 export function Rubik() {
   const ContextProviders = useContextBridge(ColoringContext);
@@ -99,8 +99,8 @@ export function Rubik() {
   }
 
   useEffect(() => {
-    CubeJs.initSolver(onSolve);
-    return () => CubeJs.worker.terminate();
+    RubikSolver.initSolver(onSolve);
+    return () => RubikSolver.worker.terminate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -191,8 +191,8 @@ export function Rubik() {
       return;
     }
 
-    const cube = CubeJs.fromString(encodedRubik);
-    const movedCube = CubeJs.move(cube, moveListRef.current);
+    const cube = RubikSolver.fromString(encodedRubik);
+    const movedCube = RubikSolver.move(cube, moveListRef.current);
 
     setIsSolved(movedCube === solvedEncodedRubik);
 
@@ -255,7 +255,7 @@ export function Rubik() {
   const addToMoveList = (moves: MoveWithDoubles[]) => {
     const newList = moveListRef.current.concat(moves);
     const currentCube = solvedEncodedRubik;
-    const movedCube = CubeJs.move(currentCube, newList);
+    const movedCube = RubikSolver.move(currentCube, newList);
     if (movedCube === solvedEncodedRubik) {
       moveListRef.current = [];
     } else moveListRef.current = newList;
@@ -299,12 +299,12 @@ export function Rubik() {
     }
 
     setIsInvalid(false);
-    const cube = CubeJs.fromString(encodedRubik);
-    const movedCube = CubeJs.move(cube, moveListRef.current);
+    const cube = RubikSolver.fromString(encodedRubik);
+    const movedCube = RubikSolver.move(cube, moveListRef.current);
     setIsMoving(true);
     setIsSolving(true);
 
-    CubeJs.solve({
+    RubikSolver.solve({
       swapMap: swapMap!,
       unorderedEncoded: unorderedEncoded!,
       cube: movedCube,
@@ -325,7 +325,7 @@ export function Rubik() {
         index + 1,
         currentSolutionStepIndex + 1
       );
-      const inverse = CubeJs.inverse(moves.join(' ')).split(
+      const inverse = RubikSolver.inverse(moves.join(' ')).split(
         ' '
       ) as MoveWithDoubles[];
       setCurrentSolutionStepIndex(currentSolutionStepIndex - 1);
@@ -361,7 +361,7 @@ export function Rubik() {
     const inverted =
       toSolution === ''
         ? []
-        : CubeJs.inverse(toSolution.split(' ').join(' ')).split(' ');
+        : RubikSolver.inverse(toSolution.split(' ').join(' ')).split(' ');
     moveListRef.current = inverted as MoveWithDoubles[];
   }
 
