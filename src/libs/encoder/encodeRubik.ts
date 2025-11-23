@@ -1,11 +1,7 @@
 import { initialRubik } from '@/data';
 
-import {
-  indexedSides,
-  orderedSides,
-  type Sides,
-  type VisibleSide,
-} from '@/domain';
+import { orderedSides, type Sides, type VisibleSide } from '@/domain';
+import { indexedSides } from './indexedSides';
 import { isEncodedRubikValid } from './isEncodedRubikValid';
 
 const sidesIndexMap = indexedSides.map((s) =>
@@ -44,6 +40,7 @@ export type Encoded = {
   unorderedEncoded: string;
   swapMap: Record<VisibleSide, VisibleSide>;
 };
+
 // TODO write test for it
 export function encodeRubik(sides: Sides[]): Encoded | null {
   const unorderedEncoded = encodeRubikUnordered(sides);

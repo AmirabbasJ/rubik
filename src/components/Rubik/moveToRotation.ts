@@ -1,4 +1,4 @@
-import type { Axis, MoveWithDoubles } from '@/domain';
+import type { Axis, Move } from '@/domain';
 
 export interface Rotation {
   axis: Axis;
@@ -7,7 +7,7 @@ export interface Rotation {
   onComplete?: (index: number) => void;
 }
 
-export function moveToRotation(moveName: MoveWithDoubles): Rotation {
+export function moveToRotation(moveName: Move): Rotation {
   switch (moveName) {
     case 'U':
       return { axis: 'y', limit: 0.5, multiplier: -1 };

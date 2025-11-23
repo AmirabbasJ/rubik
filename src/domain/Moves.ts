@@ -10,9 +10,13 @@ export type Move =
   | "R'"
   | "L'"
   | "F'"
-  | "B'";
-
-export type MoveWithDoubles = Move | 'U2' | 'D2' | 'R2' | 'L2' | 'F2' | 'B2';
+  | "B'"
+  | 'U2'
+  | 'D2'
+  | 'R2'
+  | 'L2'
+  | 'F2'
+  | 'B2';
 
 export const Move = {
   Up: 'U',

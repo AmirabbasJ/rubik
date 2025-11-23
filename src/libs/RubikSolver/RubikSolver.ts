@@ -1,7 +1,9 @@
 import { initialRubik } from '@/data';
-import { indexedSides, type Sides } from '@/domain';
-import { shuffleEncodedCenter, type Encoded } from '@/libs/encoder';
+import { orderedSides, type Sides, type VisibleSide } from '@/domain';
+import { type Encoded } from '@/libs/encoder';
 import Cube, { type CubeState } from 'cubejs';
+import shuffle from 'lodash.shuffle';
+import { indexedSides } from '../encoder/indexedSides';
 
 export class RubikSolver {
   static solvedEncoded: string = new Cube().asString();
@@ -20,7 +22,17 @@ export class RubikSolver {
 
   static shuffle() {
     const randomCube = Cube.random();
-    const encodedShuffle = shuffleEncodedCenter(randomCube.asString());
+
+    const unorderedEncoded = shuffle(orderedSides).join('');
+
+    const swapMap = orderedSides.reduce(
+      (acc, curr, i) => ({ ...acc, [curr]: unorderedEncoded[i] }),
+      {} as Record<VisibleSide, VisibleSide>
+    );
+
+    const encodedShuffle = (randomCube.asString().split('') as VisibleSide[])
+      .map((side) => swapMap[side])
+      .join('');
 
     const nameShuffleMap = indexedSides
       .map((v, i) => ({ [v]: `${encodedShuffle[i]}${v[1]}` }))

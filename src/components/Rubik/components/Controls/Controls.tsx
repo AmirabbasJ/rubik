@@ -1,9 +1,10 @@
-import { keyToMoveSideMap, Move } from '@/domain';
+import { Move } from '@/domain';
 import { ChevronRightIcon, CircleIcon } from '@/icons';
 import { Button } from '@/ui';
 import clsx from 'clsx';
 import { useCallback, useEffect } from 'react';
 import classes from './Controls.module.css';
+import { keyToMoveSideMap } from './keyToMoveSideMap';
 
 interface Props {
   move: (m: Move[]) => void;
@@ -13,6 +14,21 @@ interface Props {
   solutionIndex: number | null;
   gotoSolutionMove: (index: number) => void;
 }
+
+const moves: Move[] = [
+  'U',
+  'D',
+  'R',
+  'L',
+  'F',
+  'B',
+  "U'",
+  "D'",
+  "R'",
+  "L'",
+  "F'",
+  "B'",
+] as const;
 
 export function Controls({
   move,
@@ -45,7 +61,7 @@ export function Controls({
   return (
     <div className={classes.container}>
       <div className={classes.controls}>
-        {Object.values(Move).map((moveName) => (
+        {moves.map((moveName) => (
           <Button
             square
             disabled={isSolving}

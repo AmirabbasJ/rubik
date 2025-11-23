@@ -1,12 +1,7 @@
 import { ColoringContext } from '@/context';
 import { initialRubik } from '@/data';
-import type { MoveWithDoubles, Rubik } from '@/domain';
-import {
-  InvalidRubikError,
-  type Side,
-  type Sides,
-  type VisibleSide,
-} from '@/domain';
+import type { Move, Rubik } from '@/domain';
+import { type Side, type Sides, type VisibleSide } from '@/domain';
 import { useColoring, useResponsiveCamera, useRubikAudio } from '@/hooks';
 import { encodeRubik, type Encoded } from '@/libs/encoder';
 import { RubikSolver } from '@/libs/RubikSolver';
@@ -39,7 +34,7 @@ export function Rubik() {
   const [isSolving, setIsSolving] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
   const [hasColorsChanged, setHasColorsChanged] = useState(false);
-  const moveListRef = useRef<MoveWithDoubles[]>([]);
+  const moveListRef = useRef<Move[]>([]);
   const [currentSolution, setCurrentSolution] = useState<string | null>(null);
   const [currentSolutionStepIndex, setCurrentSolutionStepIndex] = useState<
     number | null
@@ -68,28 +63,19 @@ export function Rubik() {
       return;
     }
     doubleRequestAnimationFrame(() => {
-      try {
-        setCurrentSolution(`- ${solution}`);
-        setCurrentSolutionStepIndex(1);
-        move(
-          solution.split(' ') as MoveWithDoubles[],
-          () => {
-            const sideSwapInverseMap = inverseObject(swapMap!);
-            reset(sideSwapInverseMap);
-            setIsSolved(true);
-          },
-          () => {
-            setCurrentSolutionStepIndex((i) => i! + 1);
-          }
-        );
-      } catch (e) {
-        const error = e as Error;
-        if (error.name === InvalidRubikError.name) {
-          setIsMoving(false);
-          setIsSolving(false);
-          setIsInvalid(true);
+      setCurrentSolution(`- ${solution}`);
+      setCurrentSolutionStepIndex(1);
+      move(
+        solution.split(' ') as Move[],
+        () => {
+          const sideSwapInverseMap = inverseObject(swapMap!);
+          reset(sideSwapInverseMap);
+          setIsSolved(true);
+        },
+        () => {
+          setCurrentSolutionStepIndex((i) => i! + 1);
         }
-      }
+      );
     });
   }
 
@@ -196,12 +182,14 @@ export function Rubik() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function rotate(
-    rotations: Rotation[],
+  const move = (
+    moves: Move[],
     onComplete?: VoidFunction,
     onEach?: (index: number) => void
-  ) {
-    if (isAnimating()) return;
+  ) => {
+    if (isMoving || isAnimating()) return;
+    setIsMoving(true);
+    const rotations = moves.map((moveName) => moveToRotation(moveName));
 
     resetCubeGroup();
     attachToRotationGroup(rotations[0]);
@@ -234,20 +222,9 @@ export function Rubik() {
       });
     playRotationAudio(Math.abs(rotations[0].multiplier));
     first.start();
-  }
-
-  const move = (
-    moves: MoveWithDoubles[],
-    onComplete?: VoidFunction,
-    onEach?: (index: number) => void
-  ) => {
-    if (isMoving || isAnimating()) return;
-    setIsMoving(true);
-    const rotations = moves.map((moveName) => moveToRotation(moveName));
-    rotate(rotations, onComplete, onEach);
   };
 
-  const addToMoveList = (moves: MoveWithDoubles[]) => {
+  const addToMoveList = (moves: Move[]) => {
     const newList = moveListRef.current.concat(moves);
     const currentCube = solvedEncodedRubik;
     const movedCube = RubikSolver.move(currentCube, newList);
@@ -257,7 +234,7 @@ export function Rubik() {
   };
 
   const clientMove = (
-    moves: MoveWithDoubles[],
+    moves: Move[],
     onComplete?: VoidFunction,
     onEach?: (index: number) => void
   ) => {
@@ -320,9 +297,7 @@ export function Rubik() {
         index + 1,
         currentSolutionStepIndex + 1
       );
-      const inverse = RubikSolver.inverse(moves.join(' ')).split(
-        ' '
-      ) as MoveWithDoubles[];
+      const inverse = RubikSolver.inverse(moves.join(' ')).split(' ') as Move[];
       setCurrentSolutionStepIndex(currentSolutionStepIndex - 1);
       move(
         inverse,
@@ -337,7 +312,7 @@ export function Rubik() {
       const moves = solutionMoves.slice(
         currentSolutionStepIndex + 1,
         index + 1
-      ) as MoveWithDoubles[];
+      ) as Move[];
 
       setCurrentSolutionStepIndex(currentSolutionStepIndex + 1);
       move(
@@ -357,7 +332,7 @@ export function Rubik() {
       toSolution === ''
         ? []
         : RubikSolver.inverse(toSolution.split(' ').join(' ')).split(' ');
-    moveListRef.current = inverted as MoveWithDoubles[];
+    moveListRef.current = inverted as Move[];
   }
 
   function reset(swapMap?: Record<VisibleSide, VisibleSide>) {
