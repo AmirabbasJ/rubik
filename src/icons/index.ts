@@ -3,6 +3,7 @@ export * from './ChevronRightIcon';
 export * from './CircleIcon';
 export * from './CloseIcon';
 export * from './CoffeeIcon';
+export * from './CopyIcon';
 export * from './CubeIcon';
 export * from './GitHubIcon';
 export * from './HeartIcon';

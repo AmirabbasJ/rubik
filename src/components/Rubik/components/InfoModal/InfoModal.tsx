@@ -1,4 +1,5 @@
-import { CloseIcon, CubeIcon, GitHubIcon, HeartIcon } from '@/icons';
+import { config } from '@/config';
+import { CloseIcon, CopyIcon, CubeIcon, GitHubIcon, HeartIcon } from '@/icons';
 import { Button } from '@/ui';
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
@@ -12,6 +13,7 @@ interface InfoModalProps {
 
 export const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
   const [isHoldingShift, setIsHoldingShift] = useState(false);
+  const [copiedAddress, setCopiedAddress] = useState(false);
 
   useEffect(() => {
     const onShiftDown = (e: KeyboardEvent) => {
@@ -32,6 +34,16 @@ export const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
       document.removeEventListener('keyup', onShiftUp);
     };
   }, [isHoldingShift, isOpen]);
+
+  const handleCopyAddress = async (): Promise<void> => {
+    try {
+      await navigator.clipboard.writeText(config.walletAddress);
+      setCopiedAddress(true);
+      setTimeout(() => setCopiedAddress(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy address:', err);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -121,7 +133,7 @@ export const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
               <div className={classes.support}>
                 <Button className={classes.supportLinkButton}>
                   <a
-                    href="https://github.com/amirabbasj/rubik"
+                    href={config.repoAddress}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={classes.link}
@@ -131,17 +143,25 @@ export const InfoModal = ({ isOpen, onClose }: InfoModalProps) => {
                   </a>
                 </Button>
 
-                {/* <Button className={classes.supportLinkButton}>
-                  <a
-                    href="https://buymeacoffee.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={classes.link}
-                  >
-                    <CoffeeIcon width={20} height={20} />
-                    Buy Me a Coffee
-                  </a>
-                </Button> */}
+                <Button
+                  onClick={handleCopyAddress}
+                  className={clsx(classes.supportLinkButton, {
+                    [classes.copied]: copiedAddress,
+                  })}
+                  title="Copy wallet address"
+                >
+                  <div className={classes.link}>
+                    <CopyIcon width={20} height={20} />
+                    <span>
+                      {copiedAddress
+                        ? 'Copied!'
+                        : `Donate: ${config.walletAddress.slice(
+                            0,
+                            6
+                          )}...${config.walletAddress.slice(-4)}`}
+                    </span>
+                  </div>
+                </Button>
               </div>
             </section>
 

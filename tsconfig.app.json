@@ -37,7 +37,8 @@
       "@/components": ["./src/components"],
       "@/domain": ["./src/domain"],
       "@/icons": ["./src/icons"],
-      "@/ui": ["./src/ui"]
+      "@/ui": ["./src/ui"],
+      "@/config": ["./src/config"]
     }
   },
   "include": ["src"]
